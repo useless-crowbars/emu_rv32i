@@ -10,7 +10,6 @@ char *strcpy(char *restrict dst, const char *restrict src);
 char *strncpy(char *dst, const char *restrict src, size_t dsize);
 int abs(int j);
 int atoi(const char *nptr);
-int snprintf(char *str, size_t size, const char *restrict format, ...);
 int sprintf(char *restrict str, const char *restrict format, ...);
 int strcasecmp(const char *s1, const char *s2);
 int strcmp(const char *s1, const char *s2);
@@ -21,6 +20,5 @@ size_t strlen(const char *s);
 void *memcpy(void *dest, const void *src, size_t n);
 void *memset(void *s, int c, size_t n);
 char *strcat(char *restrict dst, const char *restrict src);
-void *alloca(size_t size);
 
 #endif

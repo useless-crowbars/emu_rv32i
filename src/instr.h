@@ -10,9 +10,9 @@ extern uint32_t sp;
 extern uint32_t x[32];
 extern uint32_t instr;
 
-#define PRINT 0
+#define PRINT 1
 
-// riscv32i
+// rv32i
 void lui();
 void auipc();
 void addi();
@@ -65,6 +65,16 @@ void blt();
 void bge();
 void bltu();
 void bgeu();
+
+// rv32m
+void mul();
+void mulh();
+void mulhsu();
+void mulhu();
+void _div();
+void divu();
+void rem();
+void remu();
 
 void imm_arith_instr();
 void arith_instr();

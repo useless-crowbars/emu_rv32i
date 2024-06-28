@@ -1,4 +1,5 @@
 emdoom
 *.bin
 emu_rv32i
-test/test
+test
+file

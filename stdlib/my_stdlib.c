@@ -51,8 +51,6 @@ int atoi(const char *nptr)
 	return sign * result;
 }
 
-///////////////////
-
 void append_char(char *str, size_t *index, size_t size, char c)
 {
 	if (*index < size - 1) {
@@ -68,66 +66,35 @@ void append_string(char *str, size_t *index, size_t size, const char *s)
 	}
 }
 
-void append_int(char *str, size_t *index, size_t size, int value)
+void append_int(char *str, size_t *index, size_t size, int value, int num_size)
 {
-	char buffer[20];
-	int pos = 0;
-	int is_negative = value < 0;
-
-	if (is_negative) {
+	if (value < 0) {
+		append_char(str, index, size, '-');
 		value = -value;
 	}
 
-	do {
-		buffer[pos++] = '0' + (value % 10);
-		value /= 10;
-	} while (value > 0);
-
-	if (is_negative) {
-		buffer[pos++] = '-';
+	int power_of_10 = 1;
+	int num_copy = value;
+	int cnt = 0;
+	while (num_copy >= 10) {
+		num_copy /= 10;
+		power_of_10 *= 10;
+		cnt++;
 	}
 
-	while (--pos >= 0) {
-		append_char(str, index, size, buffer[pos]);
+	while (cnt < --num_size) {
+		append_char(str, index, size, '0');
 	}
-}
 
-int snprintf(char *str, size_t size, const char *restrict format, ...)
-{
-	va_list args;
-	va_start(args, format);
-	size_t index = 0;
-
-	for (; *format; format++) {
-		if (*format == '%') {
-			format++;
-			if (*format == 'd') {
-				int value = va_arg(args, int);
-				append_int(str, &index, size, value);
-			} else if (*format == 's') {
-				const char *value = va_arg(args, const char *);
-				append_string(str, &index, size, value);
-			} else if (*format == 'c') {
-				char value = (char)va_arg(args, int);
-				append_char(str, &index, size, value);
-			} else {
-				__asm__ __volatile__("ecall;");
-				append_char(str, &index, size, '%');
-				append_char(str, &index, size, *format);
-			}
-		} else {
-			append_char(str, &index, size, *format);
+	while (power_of_10 > 0) {
+		int digit = 0;
+		while (value >= power_of_10) {
+			value -= power_of_10;
+			digit++;
 		}
+		append_char(str, index, size, digit + '0');
+		power_of_10 /= 10;
 	}
-	if (size > 0) {
-		if (index < size) {
-			str[index] = '\0';
-		} else {
-			str[size - 1] = '\0';
-		}
-	}
-	va_end(args);
-	return (int)index;
 }
 
 int sprintf(char *restrict str, const char *restrict format, ...)
@@ -139,19 +106,23 @@ int sprintf(char *restrict str, const char *restrict format, ...)
 	for (; *format; format++) {
 		if (*format == '%') {
 			format++;
-			if (*format == 'd') {
+			if (*format == 'd' || *format == 'i') {
 				int value = va_arg(args, int);
-				append_int(str, &index, MAX_INT, value);
+				append_int(str, &index, MAX_INT, value, 0);
 			} else if (*format == 's') {
 				const char *value = va_arg(args, const char *);
 				append_string(str, &index, MAX_INT, value);
-			} else if (*format == 'c') {
-				char value = (char)va_arg(args, int);
-				append_char(str, &index, MAX_INT, value);
+			} else if (*format == '.' && *(format + 1) > '0' && *(format + 1) < '9') {
+				format++;
+				if (*(format + 1) == 'd' || *(format + 1) == 'i') {
+					int value = va_arg(args, int);
+					append_int(str, &index, MAX_INT, value, *format - '0');
+					format++;
+				} else {
+					__asm__ __volatile__("ecall");
+				}
 			} else {
-				__asm__ __volatile__("ecall;");
-				append_char(str, &index, MAX_INT, '%');
-				append_char(str, &index, MAX_INT, *format);
+				__asm__ __volatile__("ecall");
 			}
 		} else {
 			append_char(str, &index, MAX_INT, *format);
@@ -163,10 +134,7 @@ int sprintf(char *restrict str, const char *restrict format, ...)
 	va_end(args);
 
 	return (int)index;
-	return 0;
 }
-
-///////
 
 int tolower(int c)
 {
@@ -248,7 +216,6 @@ void *memset(void *s, int c, size_t n)
 	unsigned char *p = (unsigned char *)s;
 	unsigned char uc = (unsigned char)c;
 
-	// Fill memory block with the specified value
 	for (size_t i = 0; i < n; ++i) {
 		p[i] = uc;
 	}
@@ -269,10 +236,4 @@ char *strcat(char *restrict dst, const char *restrict src)
 	return dst;
 }
 
-void *alloca(size_t size)
-{
-	//__asm__ __volatile__("ecall");
-	return NULL;
-}
-
-#endif __riscv
+#endif

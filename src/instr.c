@@ -703,60 +703,209 @@ void imm_arith_instr()
 	}
 }
 
+void mul()
+{
+	size_t rd = (instr >> 7) & 0x1f;
+	size_t rs1 = (instr >> 15) & 0x1f;
+	size_t rs2 = (instr >> 20) & 0x1f;
+
+	if (PRINT) {
+		printf("mul %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
+	}
+
+	x[rd] = (int32_t)x[rs1] * (int32_t)x[rs2];
+}
+
+void mulh()
+{
+	size_t rd = (instr >> 7) & 0x1f;
+	size_t rs1 = (instr >> 15) & 0x1f;
+	size_t rs2 = (instr >> 20) & 0x1f;
+
+	if (PRINT) {
+		printf("mulh %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
+	}
+
+	x[rd] = ((int64_t)x[rs1] * (int64_t)x[rs2]) >> 32;
+}
+
+void mulhsu()
+{
+	size_t rd = (instr >> 7) & 0x1f;
+	size_t rs1 = (instr >> 15) & 0x1f;
+	size_t rs2 = (instr >> 20) & 0x1f;
+
+	if (PRINT) {
+		printf("mulhsu %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
+	}
+
+	x[rd] = ((int64_t)x[rs1] * (uint64_t)x[rs2]) >> 32;
+}
+
+void mulhu()
+{
+	size_t rd = (instr >> 7) & 0x1f;
+	size_t rs1 = (instr >> 15) & 0x1f;
+	size_t rs2 = (instr >> 20) & 0x1f;
+
+	if (PRINT) {
+		printf("mulhu %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
+	}
+
+	x[rd] = ((uint64_t)x[rs1] * (uint64_t)x[rs2]) >> 32;
+}
+
+void _div()
+{
+	size_t rd = (instr >> 7) & 0x1f;
+	size_t rs1 = (instr >> 15) & 0x1f;
+	size_t rs2 = (instr >> 20) & 0x1f;
+
+	if (PRINT) {
+		printf("div %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
+	}
+
+	x[rd] = (int32_t)x[rs1] / (int32_t)x[rs2];
+}
+
+void divu()
+{
+	size_t rd = (instr >> 7) & 0x1f;
+	size_t rs1 = (instr >> 15) & 0x1f;
+	size_t rs2 = (instr >> 20) & 0x1f;
+
+	if (PRINT) {
+		printf("divu %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
+	}
+
+	x[rd] = x[rs1] / x[rs2];
+}
+
+void rem()
+{
+	size_t rd = (instr >> 7) & 0x1f;
+	size_t rs1 = (instr >> 15) & 0x1f;
+	size_t rs2 = (instr >> 20) & 0x1f;
+
+	if (PRINT) {
+		printf("rem %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
+	}
+
+	x[rd] = (int32_t)x[rs1] % (int32_t)x[rs2];
+}
+
+void remu()
+{
+	size_t rd = (instr >> 7) & 0x1f;
+	size_t rs1 = (instr >> 15) & 0x1f;
+	size_t rs2 = (instr >> 20) & 0x1f;
+
+	if (PRINT) {
+		printf("remu %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
+	}
+
+	x[rd] = x[rs1] % x[rs2];
+}
+
 void arith_instr()
 {
 	uint32_t op2 = (instr >> 12) & 0x7;
 	uint32_t op3 = (instr >> 27);
+	uint32_t op4 = (instr >> 25) & 0x3;
 
-	switch (op2) {
-	case 0b000:
-		switch (op3) {
-		case 0b00000:
-			add();
+	switch (op4) {
+	case 0b01:
+		// rv32m
+		switch (op2) {
+		case 0b000:
+			mul();
 			break;
-		case 0b01000:
-			sub();
+		case 0b001:
+			mulh();
+			break;
+		case 0b010:
+			mulhsu();
+			break;
+		case 0b011:
+			mulhu();
+			break;
+		case 0b100:
+			_div();
+			break;
+		case 0b101:
+			divu();
+			break;
+		case 0b110:
+			rem();
+			break;
+		case 0b111:
+			remu();
 			break;
 		default:
-			printf("arith_instr(): 0b000 %d\n", op3);
+			printf("arith_instr(): invalid op2 %d\n", op2);
 			exit(-1);
 			break;
 		}
 		break;
-	case 0b001:
-		sll();
-		break;
-	case 0b010:
-		sltu();
-		break;
-	case 0b011:
-		sltu();
-		break;
-	case 0b100:
-		xor();
-		break;
-	case 0b101:
-		switch (op3) {
-		case 0b00000:
-			srl();
+
+	case 0b00:
+		// rv32i
+		switch (op2) {
+		case 0b000:
+			switch (op3) {
+			case 0b00000:
+				add();
+				break;
+			case 0b01000:
+				sub();
+				break;
+			default:
+				printf("arith_instr(): 0b000 %d\n", op3);
+				exit(-1);
+				break;
+			}
 			break;
-		case 0b01000:
-			sra();
+		case 0b001:
+			sll();
+			break;
+		case 0b010:
+			sltu();
+			break;
+		case 0b011:
+			sltu();
+			break;
+		case 0b100:
+			xor();
+			break;
+		case 0b101:
+			switch (op3) {
+			case 0b00000:
+				srl();
+				break;
+			case 0b01000:
+				sra();
+				break;
+			default:
+				printf("arith_instr(): 0b101 %d\n", op3);
+				exit(-1);
+				break;
+			}
+			break;
+		case 0b110:
+			or ();
+			break;
+		case 0b111:
+			and();
 			break;
 		default:
-			printf("arith_instr(): 0b101 %d\n", op3);
+			printf("arith_instr(): invalid op2 %d\n", op2);
 			exit(-1);
 			break;
 		}
 		break;
-	case 0b110:
-		or ();
-		break;
-	case 0b111:
-		and();
-		break;
+
 	default:
-		printf("arith_instr(): invalid opcode %d\n", op2);
+		printf("arith_instr(): invalid op4 %d\n", op4);
 		exit(-1);
 		break;
 	}

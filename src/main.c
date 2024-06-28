@@ -43,9 +43,9 @@ size_t open_file(const char *filename, void **ptr)
 void init_mem()
 {
 	mem[GPU] = malloc(0x20000); // 128kB
-	mem[STACK] = malloc(0x10000); // 64kB
+	mem[STACK] = malloc(0x100000); // 1MB
 
-	open_file("./test/text.bin", &mem[TEXT]);
+	open_file("./text.bin", &mem[TEXT]);
 	mem[DATA] = malloc(0x10000); // 64kB
 	if (mem[DATA] == NULL) {
 		printf("mem[DATA] == NULL\n");
@@ -68,8 +68,8 @@ int main()
 	init_mem();
 	init_screen();
 
-	const int16_t update_interval = 10000;
-	int16_t i = 0;
+	const int32_t update_interval = 10000;
+	int32_t i = 0;
 
 	while (true) {
 		exec_instr();

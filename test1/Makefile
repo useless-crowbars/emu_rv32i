@@ -1,4 +1,4 @@
-CFLAGS:=-Os -D__STDC_HOSTED__=0 -w $(IGNORE_WARNINGS) -march=rv32i -mabi=ilp32 -mstrict-align -nostdlib -ffreestanding -fdata-sections -ffunction-sections
+CFLAGS:=-Os -D__STDC_HOSTED__=0 -w $(IGNORE_WARNINGS) -march=rv32im -mabi=ilp32 -mstrict-align -nostdlib -ffreestanding -fdata-sections -ffunction-sections
 LDFLAGS:= -T linker.ld $(CFLAGS)
 SUPPORT_FILES:=startup.S ../stdlib/*.c
 CC:=riscv64-elf-gcc
