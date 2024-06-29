@@ -210,7 +210,7 @@ void sll()
 		printf("sll %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = x[rs1] << x[rs2];
+	x[rd] = x[rs1] << (x[rs2] & 0x1f);
 }
 
 void slt()
@@ -262,7 +262,7 @@ void xor
 		printf("srl %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = x[rs1] >> x[rs2];
+	x[rd] = x[rs1] >> (x[rs2] & 0x1f);
 }
 
 void sra()
@@ -275,7 +275,7 @@ void sra()
 		printf("sra %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = (int32_t)x[rs1] >> x[rs2];
+	x[rd] = (int32_t)x[rs1] >> (x[rs2] & 0x1f);
 }
 
 void or ()
@@ -447,7 +447,7 @@ void lbu()
 		printf("lbu %s, %d(%s)\n", regs[rd], off, regs[rs1]);
 	}
 
-	x[rd] = get_b(x[rs1] + off);
+	x[rd] = (uint32_t)get_b(x[rs1] + off);
 }
 
 void lhu()
@@ -461,7 +461,7 @@ void lhu()
 		printf("lhu %s, %d(%s)\n", regs[rd], off, regs[rs1]);
 	}
 
-	x[rd] = get_hw(x[rs1] + off);
+	x[rd] = (uint32_t)get_hw(x[rs1] + off);
 }
 
 void sb()
@@ -475,7 +475,7 @@ void sb()
 		printf("sb %s, %d(%s)\n", regs[rs2], off, regs[rs1]);
 	}
 
-	set_b(x[rs1] + off, (uint8_t)x[rs2]);
+	set_b(x[rs1] + off, (uint8_t)(x[rs2] & 0xff));
 }
 
 void sh()
@@ -489,7 +489,7 @@ void sh()
 		printf("sh %s, %d(%s)\n", regs[rs2], off, regs[rs1]);
 	}
 
-	set_hw(x[rs1] + off, (uint16_t)x[rs2]);
+	set_hw(x[rs1] + off, (uint16_t)(x[rs2] & 0xffff));
 }
 
 void sw()

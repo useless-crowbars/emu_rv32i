@@ -68,7 +68,7 @@ int main()
 	init_mem();
 	//init_screen();
 
-	//const int32_t update_interval = 1000000;
+	const int32_t update_interval = 1000000;
 	int32_t i = 0;
 
 	while (true) {
@@ -90,6 +90,7 @@ int main()
 		}
 
 		/*
+		exec_instr();
 		if (i++ >= update_interval) {
 			update_screen();
 			i = 0;
