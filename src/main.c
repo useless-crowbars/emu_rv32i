@@ -66,17 +66,34 @@ void init_mem()
 int main()
 {
 	init_mem();
-	init_screen();
+	//init_screen();
 
-	const int32_t update_interval = 10000;
+	//const int32_t update_interval = 1000000;
 	int32_t i = 0;
 
 	while (true) {
-		exec_instr();
+		int bri;
+		scanf("%d", &bri);
 
+		if (bri > 0) {
+			for (int i = 0; i < bri; i++) {
+				exec_instr();
+			}
+		} else if (bri == -1){
+			print_regs();
+		} else if (bri == -2) {
+			uint32_t addr;
+			scanf("%x", &addr);
+
+			uint32_t* real_addr = (uint32_t*)get_mem_addr(addr);
+			printf("M[%x] = %d / %x\n", (uint32_t)addr, *real_addr, *real_addr);
+		}
+
+		/*
 		if (i++ >= update_interval) {
 			update_screen();
 			i = 0;
 		}
+		*/
 	}
 }

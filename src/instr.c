@@ -7,6 +7,8 @@
 uint32_t pc;
 uint32_t x[32];
 uint32_t instr;
+uint32_t brojac = 0;
+uint32_t ukupan_broj = 0;
 
 uint32_t sext(uint32_t val, uint32_t bits)
 {
@@ -51,6 +53,13 @@ void addi()
 
 	if (PRINT) {
 		printf("addi %s, %s, %d\n", regs[rd], regs[rs1], imm);
+		if (rd == 2) {
+			if ((int32_t)imm < 0) {
+				printf("USAO %d\n", brojac++);
+			} else {
+				printf("IZASAO %d\n", --brojac);
+			}
+		}
 	}
 
 	x[rd] = x[rs1] + imm;
@@ -432,6 +441,7 @@ void lbu()
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
 	uint32_t off = instr >> 20;
+	off = sext(off, 12);
 
 	if (PRINT) {
 		printf("lbu %s, %d(%s)\n", regs[rd], off, regs[rs1]);
@@ -445,6 +455,7 @@ void lhu()
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
 	uint32_t off = instr >> 20;
+	off = sext(off, 12);
 
 	if (PRINT) {
 		printf("lhu %s, %d(%s)\n", regs[rd], off, regs[rs1]);
@@ -1019,7 +1030,8 @@ void exec_instr()
 	uint32_t *addr = (uint32_t *)(uint64_t)get_mem_addr(pc);
 	instr = *addr;
 	if (PRINT) {
-		printf("pc = %08x\t\t bytes = %08x\t\t ", pc, instr);
+		//printf("pc = %08x\t\t bytes = %08x\t\t ", pc, instr);
+		printf("%d. pc = %08x\t\t sp = %08x\t\t a0 = %08x\t\t bytes = %08x\t\t ", ukupan_broj, pc, x[2], x[10], instr);
 	}
 	pc += 4;
 
@@ -1068,4 +1080,5 @@ void exec_instr()
 		break;
 	}
 	x[0] = 0;
+	ukupan_broj ++;
 }
