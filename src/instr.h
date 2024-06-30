@@ -11,8 +11,9 @@ extern uint32_t instr;
 extern uint64_t brojac;
 extern uint64_t ukupan_broj;
 
-#define PRINT (ukupan_broj % 1000000 == 0)
-//#define PRINT 1
+//#define PRINT (ukupan_broj % 1000000 == 0)
+//#define PRINT (ukupan_broj > 13200000)
+#define PRINT 0
 
 // rv32i
 void lui();

@@ -10,6 +10,7 @@ const char *regs[] = {
 
 void print_regs()
 {
+	printf("PC \t %08x\n", pc);
 	printf("%s \t %08x \t %d\n", regs[0], x[0], x[0]);
 	printf("%s \t %08x \t %d\n", regs[1], x[1], x[1]);
 	printf("%s \t %08x \t %d\n", regs[2], x[2], x[2]);

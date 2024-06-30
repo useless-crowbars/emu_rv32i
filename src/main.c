@@ -66,10 +66,10 @@ void init_mem()
 int main()
 {
 	init_mem();
-	//init_screen();
+	init_screen();
 
-	//const int32_t update_interval = 10000;
-	//int32_t i = 0;
+	const int32_t update_interval = 300000;
+	int32_t i = 0;
 
 	while (true) {
 		/*
@@ -92,9 +92,9 @@ int main()
 		*/
 
 		exec_instr();
-		//if (i++ >= update_interval) {
-		//	update_screen();
-		//	i = 0;
-		//}
+		if (i++ >= update_interval) {
+			update_screen();
+			i = 0;
+		}
 	}
 }

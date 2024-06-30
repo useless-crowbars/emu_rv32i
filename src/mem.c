@@ -23,14 +23,10 @@ SEG get_mem_seg(uint32_t address)
 	}
 
 	if (RODATA_BEGIN <= address && address < RODATA_END) {
-		printf("broj instr do rodata %d\n", ukupan_broj);
-		exit(-1);
 		return RODATA;
 	}
 
 	if (GPU_BEGIN <= address && address < GPU_END) {
-		printf("broj instr do gpu %d\n", ukupan_broj);
-		exit(-1);
 		return GPU;
 	}
 

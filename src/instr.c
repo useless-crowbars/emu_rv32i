@@ -41,7 +41,7 @@ void auipc()
 	}
 
 	imm = sext(imm, 20);
-	x[rd] = pc + (imm << 12);
+	x[rd] = pc - 4 + (imm << 12);
 }
 
 void addi()
