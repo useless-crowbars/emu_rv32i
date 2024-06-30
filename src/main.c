@@ -68,10 +68,11 @@ int main()
 	init_mem();
 	//init_screen();
 
-	const int32_t update_interval = 1000000;
-	int32_t i = 0;
+	//const int32_t update_interval = 10000;
+	//int32_t i = 0;
 
 	while (true) {
+		/*
 		int bri;
 		scanf("%d", &bri);
 
@@ -88,13 +89,12 @@ int main()
 			uint32_t* real_addr = (uint32_t*)get_mem_addr(addr);
 			printf("M[%x] = %d / %x\n", (uint32_t)addr, *real_addr, *real_addr);
 		}
-
-		/*
-		exec_instr();
-		if (i++ >= update_interval) {
-			update_screen();
-			i = 0;
-		}
 		*/
+
+		exec_instr();
+		//if (i++ >= update_interval) {
+		//	update_screen();
+		//	i = 0;
+		//}
 	}
 }

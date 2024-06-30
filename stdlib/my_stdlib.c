@@ -1,6 +1,5 @@
 #include "my_stdlib.h"
 
-#ifdef __riscv
 #include <stdarg.h>
 #define MAX_INT 2147483647
 
@@ -17,14 +16,20 @@ char *strcpy(char *restrict dst, const char *restrict src)
 	return tmp;
 }
 
-char *strncpy(char *dst, const char *restrict src, size_t dsize)
+char *strncpy(char *dst, const char *src, size_t n)
 {
-	char *tmp = dst;
-	while (dsize-- > 0 && (*dst++ = *src++) != '\0')
-		;
-	if (*(dst - 1) != '\0')
-		*dst = '\0';
-	return tmp;
+	char *start = dst;
+	size_t i;
+
+	for (i = 0; i < n && src[i] != '\0'; i++) {
+		dst[i] = src[i];
+	}
+
+	for (; i < n; i++) {
+		dst[i] = '\0';
+	}
+
+	return start;
 }
 
 int atoi(const char *nptr)
@@ -119,10 +124,10 @@ int sprintf(char *restrict str, const char *restrict format, ...)
 					append_int(str, &index, MAX_INT, value, *format - '0');
 					format++;
 				} else {
-					__asm__ __volatile__("ecall");
+					//__asm__ __volatile__("ecall");
 				}
 			} else {
-				__asm__ __volatile__("ecall");
+				//__asm__ __volatile__("ecall");
 			}
 		} else {
 			append_char(str, &index, MAX_INT, *format);
@@ -193,12 +198,16 @@ int strncasecmp(const char *s1, const char *s2, size_t n)
 
 size_t strlen(const char *s)
 {
-	size_t length = 0;
-	while (*s != '\0') {
-		length++;
-		s++;
+	if (s == NULL) {
+		return 0;
 	}
-	return length;
+
+	const char *p = s;
+	while (*p != '\0') {
+		p++;
+	}
+
+	return p - s;
 }
 
 void *memcpy(void *dest, const void *src, size_t n)
@@ -235,5 +244,3 @@ char *strcat(char *restrict dst, const char *restrict src)
 	*ptr = '\0';
 	return dst;
 }
-
-#endif

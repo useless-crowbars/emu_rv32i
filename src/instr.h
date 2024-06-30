@@ -6,11 +6,13 @@
 #include <stddef.h>
 
 extern uint32_t pc;
-extern uint32_t sp;
 extern uint32_t x[32];
 extern uint32_t instr;
+extern uint64_t brojac;
+extern uint64_t ukupan_broj;
 
-#define PRINT 1
+#define PRINT (ukupan_broj % 1000000 == 0)
+//#define PRINT 1
 
 // rv32i
 void lui();
