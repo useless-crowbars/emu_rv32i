@@ -892,7 +892,7 @@ void arith_instr()
 			sll();
 			break;
 		case 0b010:
-			sltu();
+			slt();
 			break;
 		case 0b011:
 			sltu();
