@@ -46,7 +46,7 @@ size_t open_file(const char *filename, void **ptr)
 void init_mem()
 {
 	mem[GPU] = malloc(0x20000); // 128kB
-	mem[STACK] = malloc(0x100000); // 1MB
+	mem[STACK] = malloc(0x1000); // 4kB
 
 	open_file("./text.bin", &mem[TEXT]);
 	mem[DATA] = malloc(0x10000); // 64kB

@@ -14,10 +14,10 @@ void update_screen();
 void poll_keyboard();
 void cleanup();
 
-extern bool end;
-extern char key_changed;
-extern bool key_pressed;
-extern bool change_ack;
+extern bool* end;
+extern char* key_changed;
+extern bool* key_pressed;
+extern bool* change_ack;
 
 enum KEYS {
 	LEFT,

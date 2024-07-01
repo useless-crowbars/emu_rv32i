@@ -15,12 +15,14 @@
 #define RODATA_END 0x10300000
 #define GPU_BEGIN 0x20000000
 #define GPU_END 0x20020000
-#define STACK_BEGIN 0xfff00000
+#define KB_BEGIN 0x30000000
+#define KB_END 0x30000020
+#define STACK_BEGIN 0xfffff000
 #define STACK_END 0x00000000
 
-typedef enum { TEXT, DATA, BSS, RODATA, GPU, STACK } SEG;
+typedef enum { TEXT, DATA, BSS, RODATA, GPU, KB, STACK } SEG;
 
-extern void *mem[6];
+extern void *mem[7];
 
 SEG get_mem_seg(uint32_t address);
 uint64_t get_mem_addr(uint32_t address);

@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void *mem[6];
+void *mem[7];
 
 SEG get_mem_seg(uint32_t address)
 {
@@ -28,6 +28,10 @@ SEG get_mem_seg(uint32_t address)
 
 	if (GPU_BEGIN <= address && address < GPU_END) {
 		return GPU;
+	}
+
+	if (KB_BEGIN <= address && address < KB_END) {
+		return KB;
 	}
 
 	if (STACK_BEGIN <= address) {
@@ -59,6 +63,22 @@ uint64_t get_mem_addr(uint32_t address)
 
 	if (GPU_BEGIN <= address && address < GPU_END) {
 		return (uint64_t)mem[GPU] + (address - GPU_BEGIN);
+	}
+
+	if (KB_BEGIN <= address && address < KB_END) {
+		uint64_t off = address - KB_BEGIN;
+		if (off == 0) {
+			return (uint64_t)&end;
+		} else if (off == 0x8) {
+			return (uint64_t)&key_changed;
+		} else if (off == 0x10) {
+			return (uint64_t)&key_pressed;
+		} else if (off == 0x18) {
+			return (uint64_t)&change_ack;
+		} else {
+			printf("keyboard: SEGFAULT\n");
+			exit(-1);
+		}
 	}
 
 	if (STACK_BEGIN <= address) {

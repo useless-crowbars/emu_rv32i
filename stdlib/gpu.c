@@ -1,10 +1,10 @@
 #include "gpu.h"
 
 #ifdef __riscv
-bool end = false;
-char key_changed;
-bool key_pressed;
-bool change_ack = true;
+bool* end = (bool*)0x30000000;
+char* key_changed = (char*)0x30000008;
+bool* key_pressed = (bool*)0x30000010;
+bool* change_ack = (bool*)0x30000018;
 
 #define GPU_ADDR 0x20000000
 
