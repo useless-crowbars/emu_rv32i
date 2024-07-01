@@ -10,10 +10,13 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+size_t open_file(const char *filename, void **ptr);
+void init_mem(void);
+int main(void);
+
 size_t open_file(const char *filename, void **ptr)
 {
 	int text_fd;
-	char *text;
 	struct stat st;
 	size_t len_file;
 
@@ -28,7 +31,7 @@ size_t open_file(const char *filename, void **ptr)
 		close(text_fd);
 		exit(EXIT_FAILURE);
 	}
-	len_file = st.st_size;
+	len_file = (size_t)st.st_size;
 
 	*ptr = mmap(NULL, len_file, PROT_READ, MAP_SHARED, text_fd, 0);
 	if (*ptr == MAP_FAILED) {

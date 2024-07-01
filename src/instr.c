@@ -7,7 +7,7 @@
 uint32_t pc;
 uint32_t x[32];
 uint32_t instr;
-uint64_t brojac = 0;
+int64_t brojac = 0;
 uint64_t ukupan_broj = 0;
 
 uint32_t sext(uint32_t val, uint32_t bits)
@@ -57,13 +57,13 @@ void addi()
 	if (rd == 2) {
 		if ((int32_t)imm < 0) {
 			if (PRINT) {
-				printf("USAO %d\n", brojac);
+				printf("USAO %ld\n", brojac);
 			}
 			brojac++;
 		} else {
 			brojac--;
 			if (PRINT) {
-				printf("IZASAO %d\n", brojac);
+				printf("IZASAO %ld\n", brojac);
 			}
 		}
 	}
@@ -183,7 +183,7 @@ void srai()
 		printf("srai %s, %s, %x\n", regs[rd], regs[rs1], shamt);
 	}
 
-	x[rd] = (int32_t)x[rs1] >> shamt;
+	x[rd] = (uint32_t)((int32_t)x[rs1] >> shamt);
 }
 
 void add()
@@ -287,7 +287,7 @@ void sra()
 		printf("sra %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = (int32_t)x[rs1] >> (x[rs2] & 0x1f);
+	x[rd] = (uint32_t)((int32_t)x[rs1] >> (x[rs2] & 0x1f));
 }
 
 void or ()
@@ -549,7 +549,7 @@ void jalr()
 	}
 
 	uint32_t t = pc;
-	pc = (x[rs1] + off) & ~1;
+	pc = (x[rs1] + off) & ~1U;
 	x[rd] = t;
 }
 
@@ -736,7 +736,7 @@ void mul()
 		printf("mul %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = (int32_t)x[rs1] * (int32_t)x[rs2];
+	x[rd] = (uint32_t)((int32_t)x[rs1] * (int32_t)x[rs2]);
 }
 
 void mulh()
@@ -749,7 +749,7 @@ void mulh()
 		printf("mulh %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = ((int64_t)x[rs1] * (int64_t)x[rs2]) >> 32;
+	x[rd] = (uint32_t)((uint64_t)((int64_t)x[rs1] * (int64_t)x[rs2]) >> 32);
 }
 
 void mulhsu()
@@ -762,7 +762,7 @@ void mulhsu()
 		printf("mulhsu %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = ((int64_t)x[rs1] * (uint64_t)x[rs2]) >> 32;
+	x[rd] = (uint32_t)((uint64_t)((int64_t)x[rs1] * (uint64_t)x[rs2]) >> 32);
 }
 
 void mulhu()
@@ -775,7 +775,7 @@ void mulhu()
 		printf("mulhu %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = ((uint64_t)x[rs1] * (uint64_t)x[rs2]) >> 32;
+	x[rd] = (uint32_t)((uint64_t)((uint64_t)x[rs1] * (uint64_t)x[rs2]) >> 32);
 }
 
 void _div()
@@ -788,7 +788,7 @@ void _div()
 		printf("div %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = (int32_t)x[rs1] / (int32_t)x[rs2];
+	x[rd] = (uint32_t)((int32_t)x[rs1] / (int32_t)x[rs2]);
 }
 
 void divu()
@@ -814,7 +814,7 @@ void rem()
 		printf("rem %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = (int32_t)x[rs1] % (int32_t)x[rs2];
+	x[rd] = (uint32_t)((int32_t)x[rs1] % (int32_t)x[rs2]);
 }
 
 void remu()
@@ -1092,5 +1092,5 @@ void exec_instr()
 		break;
 	}
 	x[0] = 0;
-	ukupan_broj ++;
+	ukupan_broj++;
 }

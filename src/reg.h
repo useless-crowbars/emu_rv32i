@@ -42,6 +42,6 @@ typedef struct {
 
 extern const char *regs[];
 
-void print_regs();
+void print_regs(void);
 
 #endif

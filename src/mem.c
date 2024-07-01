@@ -122,10 +122,8 @@ void set_hw(uint32_t address, uint16_t val)
 		color |= (val & 0x000f) << 4;
 
 		uint32_t off = (address - GPU_BEGIN) / 2;
-		uint32_t x = off % SCREEN_WIDTH;
-		uint32_t y = off / SCREEN_WIDTH;
 
-		write_screen(x, y, color);
+		write_screen((int)(off % SCREEN_WIDTH), (int)(off / SCREEN_WIDTH), color);
 	}
 
 	uint16_t *addr = (uint16_t *)get_mem_addr(address);

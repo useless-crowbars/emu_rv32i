@@ -15,7 +15,7 @@ bool change_ack = true;
 
 GLFWwindow *window;
 uint32_t *screen;
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
+void key_callback(GLFWwindow *w, int key, int scancode, int action, int mods);
 
 void init_window()
 {
@@ -23,7 +23,7 @@ void init_window()
 		exit(1);
 	}
 
-	window = glfwCreateWindow(GPU_SCREEN_WIDTH, GPU_SCREEN_HEIGHT, "Simple GPU Simulation", NULL, NULL);
+	window = glfwCreateWindow(GPU_SCREEN_WIDTH, GPU_SCREEN_HEIGHT, "emu_rv32im", NULL, NULL);
 	if (!window) {
 		glfwTerminate();
 		exit(1);
@@ -81,7 +81,7 @@ void cleanup()
 	free(screen);
 }
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+void key_callback(GLFWwindow *w, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 		end = true;

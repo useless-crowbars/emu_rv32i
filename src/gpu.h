@@ -12,11 +12,12 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-void init_screen();
+void init_window(void);
+void init_screen(void);
 void write_screen(int x, int y, uint32_t color);
-void update_screen();
-void poll_keyboard();
-void cleanup();
+void update_screen(void);
+void poll_keyboard(void);
+void cleanup(void);
 
 extern bool end;
 extern char key_changed;
