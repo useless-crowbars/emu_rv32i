@@ -12,6 +12,9 @@ uint64_t ukupan_broj = 0;
 
 uint32_t sext(uint32_t val, uint32_t bits)
 {
+	if (bits >= 32) {
+		return val;
+	}
 	if (val & (1 << (bits - 1))) {
 		return val | (0xFFFFFFFF << bits);
 	}
@@ -736,7 +739,7 @@ void mul()
 		printf("mul %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = (uint32_t)((int32_t)x[rs1] * (int32_t)x[rs2]);
+	x[rd] = (uint32_t)((int64_t)(int32_t)x[rs1] * (int64_t)(int32_t)x[rs2]);
 }
 
 void mulh()
@@ -749,7 +752,7 @@ void mulh()
 		printf("mulh %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = (uint32_t)((uint64_t)((int64_t)x[rs1] * (int64_t)x[rs2]) >> 32);
+	x[rd] = (uint32_t)((uint64_t)((int64_t)(int32_t)x[rs1] * (int64_t)(int32_t)x[rs2]) >> 32);
 }
 
 void mulhsu()
@@ -788,6 +791,11 @@ void _div()
 		printf("div %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
+	if (!x[rs2]) {
+		printf("EXCEPTION: division by zero\n");
+		exit(-1);
+	}
+
 	x[rd] = (uint32_t)((int32_t)x[rs1] / (int32_t)x[rs2]);
 }
 
@@ -801,6 +809,11 @@ void divu()
 		printf("divu %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
+	if (!x[rs2]) {
+		printf("EXCEPTION: mod zero\n");
+		exit(-1);
+	}
+
 	x[rd] = x[rs1] / x[rs2];
 }
 
@@ -809,6 +822,11 @@ void rem()
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
 	size_t rs2 = (instr >> 20) & 0x1f;
+
+	if (!x[rs2]) {
+		printf("EXCEPTION: mod zero\n");
+		exit(-1);
+	}
 
 	if (PRINT) {
 		printf("rem %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
@@ -825,6 +843,11 @@ void remu()
 
 	if (PRINT) {
 		printf("remu %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
+	}
+
+	if (!x[rs2]) {
+		printf("EXCEPTION: division by zero\n");
+		exit(-1);
 	}
 
 	x[rd] = x[rs1] % x[rs2];
@@ -937,6 +960,7 @@ void arith_instr()
 void unimplemented()
 {
 	printf("unimplemented(): unimplemented instr\n");
+	print_regs();
 	exit(-1);
 	// fence
 	// fencei

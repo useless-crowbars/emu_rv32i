@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 #define TEXT_BEGIN 0x00000000
-#define TEXT_END 0x00030000
+#define TEXT_END 0x00040000
 #define DATA_BEGIN 0x00100000
 #define DATA_END 0x00110000
 #define BSS_BEGIN 0x00300000
