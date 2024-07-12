@@ -118,8 +118,15 @@ void set_b(uint32_t address, uint8_t val)
 	}
 
 	if (type == GPU) {
-		printf("set_b(): GPU access\n");
-		exit(-1);
+		uint32_t color = 0xff1f1f1f;
+		// BGR (2,3,3)
+		color |= (val & 0x07) << 5;
+		color |= (val & 0x38) << (13 - 3);
+		color |= (val & 0xc0) << (22 - 6);
+
+		uint32_t off = (address - GPU_BEGIN);
+
+		write_screen((int)(off % SCREEN_WIDTH), (int)(off / SCREEN_WIDTH), color);
 	}
 
 	uint8_t *addr = (uint8_t *)get_mem_addr(address);
@@ -136,14 +143,8 @@ void set_hw(uint32_t address, uint16_t val)
 	}
 
 	if (type == GPU) {
-		uint32_t color = 0xff000000;
-		color |= (val & 0x0f00) << 12;
-		color |= (val & 0x00f0) << 8;
-		color |= (val & 0x000f) << 4;
-
-		uint32_t off = (address - GPU_BEGIN) / 2;
-
-		write_screen((int)(off % SCREEN_WIDTH), (int)(off / SCREEN_WIDTH), color);
+		printf("set_hw(): GPU access\n");
+		exit(-1);
 	}
 
 	uint16_t *addr = (uint16_t *)get_mem_addr(address);

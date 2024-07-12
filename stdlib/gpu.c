@@ -22,14 +22,14 @@ void write_screen(uint32_t x, uint32_t y, uint32_t color)
 		__asm__ __volatile__("ecall;");
 	}
 
-	uint16_t *gpu = (uint16_t *)GPU_ADDR;
-	uint16_t color16 = 0;
-	color16 |= (0x000000f0 & color) >> 4;
-	color16 |= (0x0000f000 & color) >> 8;
-	color16 |= (0x00f00000 & color) >> 12;
-	color16 |= (0xf0000000 & color) >> 16;
+	uint8_t *gpu = (uint8_t *)GPU_ADDR;
+	uint8_t color8 = 0;
+	// BGR (2,3,3)
+	color8 |= (0x000000e0 & color) >> 5;
+	color8 |= (0x0000e000 & color) >> (13 - 3);
+	color8 |= (0x00c00000 & color) >> (22 - 6);
 
-	gpu[y * SCREEN_WIDTH + x] = color16;
+	gpu[y * SCREEN_WIDTH + x] = color8;
 }
 
 void update_screen()
