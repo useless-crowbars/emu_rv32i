@@ -29,7 +29,7 @@ void write_screen(uint32_t x, uint32_t y, uint32_t color)
 	color8 |= (0x0000e000 & color) >> (13 - 3);
 	color8 |= (0x00c00000 & color) >> (22 - 6);
 
-	gpu[y * SCREEN_WIDTH + x] = color8;
+	gpu[(y / 2) * SCREEN_WIDTH + (x / 2)] = color8;
 }
 
 void update_screen()
