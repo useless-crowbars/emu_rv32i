@@ -7,8 +7,6 @@
 
 int main()
 {
-	uint16_t *gpu = (uint16_t *)0x20000000;
-
 	for (uint32_t y = 0; y < SCREEN_HEIGHT; y++) {
 		for (uint32_t x = 0; x < SCREEN_WIDTH; x++) {
 			if ((x + y) % 10 == 0) {
@@ -18,5 +16,11 @@ int main()
 			}
 		}
 	}
+
+
+	while(1) {
+		__asm__ __volatile__ ("nop");
+	}
+
 	return 0;
 }

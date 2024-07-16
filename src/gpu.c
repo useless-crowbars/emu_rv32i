@@ -52,12 +52,14 @@ void init_screen()
 void write_screen(int x, int y, uint32_t color)
 {
 	if (x < 0 || x >= SCREEN_WIDTH || y < 0 || y >= SCREEN_HEIGHT) {
+		printf("error write_screen: %d %d %x\n", x, y, color);
+		exit(1);
 		return;
 	}
 
 	for (int j = 0; j < SCALE; j++) {
 		for (int i = 0; i < SCALE; i++) {
-			screen[(y * SCALE + j) * GPU_SCREEN_WIDTH + x * SCALE + i] = color;
+			screen[((SCREEN_HEIGHT - 1 - y) * SCALE + j) * GPU_SCREEN_WIDTH + x * SCALE + i] = color;
 		}
 	}
 }

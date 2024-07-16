@@ -1,10 +1,10 @@
 #ifndef GPU_H
 #define GPU_H
 
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 200
+#define SCREEN_WIDTH 160
+#define SCREEN_HEIGHT 100
 
-#define SCALE 6
+#define SCALE 12
 #define GPU_SCREEN_WIDTH (SCREEN_WIDTH * SCALE)
 #define GPU_SCREEN_HEIGHT (SCREEN_HEIGHT * SCALE)
 

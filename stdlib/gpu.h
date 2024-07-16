@@ -1,8 +1,8 @@
 #ifndef GPU_H
 #define GPU_H
 
-#define SCREEN_WIDTH 320
-#define SCREEN_HEIGHT 200
+#define SCREEN_WIDTH 160
+#define SCREEN_HEIGHT 100
 
 #include <stdint.h>
 #include <stdbool.h>
