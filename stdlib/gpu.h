@@ -14,18 +14,4 @@ void update_screen();
 void poll_keyboard();
 void cleanup();
 
-extern bool* end;
-extern char* key_changed;
-extern bool* key_pressed;
-extern bool* change_ack;
-
-enum KEYS {
-	LEFT,
-	RIGHT,
-	UP,
-	DOWN,
-	SPACE,
-	CTRL,
-};
-
 #endif

@@ -10,7 +10,7 @@ void *mem[7];
 
 SEG get_mem_seg(uint32_t address)
 {
-	if (address < TEXT_END) {
+	if (TEXT_BEGIN <= address && address < TEXT_END) {
 		return TEXT;
 	}
 
@@ -34,7 +34,7 @@ SEG get_mem_seg(uint32_t address)
 		return KB;
 	}
 
-	if (STACK_BEGIN <= address) {
+	if (STACK_BEGIN <= address && address <= STACK_END) {
 		return STACK;
 	}
 
@@ -45,7 +45,7 @@ SEG get_mem_seg(uint32_t address)
 
 uint64_t get_mem_addr(uint32_t address)
 {
-	if (address < TEXT_END) {
+	if (TEXT_BEGIN <= address && address < TEXT_END) {
 		return (uint64_t)mem[TEXT] + (address - TEXT_BEGIN);
 	}
 
@@ -66,22 +66,10 @@ uint64_t get_mem_addr(uint32_t address)
 	}
 
 	if (KB_BEGIN <= address && address < KB_END) {
-		uint64_t off = address - KB_BEGIN;
-		if (off == 0) {
-			return (uint64_t)&end;
-		} else if (off == 0x8) {
-			return (uint64_t)&key_changed;
-		} else if (off == 0x10) {
-			return (uint64_t)&key_pressed;
-		} else if (off == 0x18) {
-			return (uint64_t)&change_ack;
-		} else {
-			printf("keyboard: SEGFAULT\n");
-			exit(-1);
-		}
+		return (uint64_t)&key_pressed;
 	}
 
-	if (STACK_BEGIN <= address) {
+	if (STACK_BEGIN <= address && address < STACK_END) {
 		return (uint64_t)mem[STACK] + (address - STACK_BEGIN);
 	}
 

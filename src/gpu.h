@@ -8,6 +8,15 @@
 #define GPU_SCREEN_WIDTH (SCREEN_WIDTH * SCALE)
 #define GPU_SCREEN_HEIGHT (SCREEN_HEIGHT * SCALE)
 
+#define KB_ESC 0x80
+#define KB_SPACE 0x40
+#define KB_D 0x20
+#define KB_S 0x10
+#define KB_A 0x08
+#define KB_W 0x04
+#define KB_SHIFT 0x02
+#define KB_CTRL 0x01
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
@@ -19,18 +28,6 @@ void update_screen(void);
 void poll_keyboard(void);
 void cleanup(void);
 
-extern bool end;
-extern char key_changed;
-extern bool key_pressed;
-extern bool change_ack;
-
-enum KEYS {
-	LEFT,
-	RIGHT,
-	UP,
-	DOWN,
-	SPACE,
-	CTRL,
-};
+extern uint8_t key_pressed;
 
 #endif

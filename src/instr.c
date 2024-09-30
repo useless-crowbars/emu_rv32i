@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-uint32_t pc;
+uint32_t pc = 0x10000000;
 uint32_t x[32];
 uint32_t instr;
 int64_t brojac = 0;

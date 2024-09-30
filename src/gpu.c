@@ -1,10 +1,7 @@
 #include "gpu.h"
 #include "mem.h"
 
-bool end = false;
-char key_changed;
-bool key_pressed;
-bool change_ack = true;
+uint8_t key_pressed = 0;
 
 #ifdef __riscv
 #else
@@ -85,44 +82,69 @@ void cleanup()
 
 void key_callback(GLFWwindow *w, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-		end = true;
-	}
-
-	if (!change_ack) {
-		return;
-	}
-
 	switch (key) {
 	case GLFW_KEY_A:
 	case GLFW_KEY_LEFT:
-		key_changed = LEFT;
+		{
+			if (action == GLFW_PRESS) {
+				key_pressed |= KB_A;
+			} else if (action == GLFW_RELEASE) {
+				key_pressed &= (uint8_t)~KB_A;
+			}
+		}
 		break;
 	case GLFW_KEY_D:
 	case GLFW_KEY_RIGHT:
-		key_changed = RIGHT;
+		{
+			if (action == GLFW_PRESS) {
+				key_pressed |= KB_D;
+			} else if (action == GLFW_RELEASE) {
+				key_pressed &= (uint8_t)~KB_D;
+			}
+		}
 		break;
 	case GLFW_KEY_W:
 	case GLFW_KEY_UP:
-		key_changed = UP;
+		{
+			if (action == GLFW_PRESS) {
+				key_pressed |= KB_W;
+			} else if (action == GLFW_RELEASE) {
+				key_pressed &= (uint8_t)~KB_W;
+			}
+		}
 		break;
 	case GLFW_KEY_S:
 	case GLFW_KEY_DOWN:
-		key_changed = DOWN;
+		{
+			if (action == GLFW_PRESS) {
+				key_pressed |= KB_S;
+			} else if (action == GLFW_RELEASE) {
+				key_pressed &= (uint8_t)~KB_S;
+			}
+		}
 		break;
 	case GLFW_KEY_SPACE:
-		key_changed = SPACE;
+		{
+			if (action == GLFW_PRESS) {
+				key_pressed |= KB_SPACE;
+			} else if (action == GLFW_RELEASE) {
+				key_pressed &= (uint8_t)~KB_SPACE;
+			}
+		}
 		break;
 	case GLFW_KEY_LEFT_CONTROL:
 	case GLFW_KEY_RIGHT_CONTROL:
-		key_changed = CTRL;
+		{
+			if (action == GLFW_PRESS) {
+				key_pressed |= KB_CTRL;
+			} else if (action == GLFW_RELEASE) {
+				key_pressed &= (uint8_t)~KB_CTRL;
+			}
+		}
 		break;
 	default:
 		break;
 	}
-
-	key_pressed = (action == GLFW_PRESS);
-	change_ack = false;
 }
 
 #endif
