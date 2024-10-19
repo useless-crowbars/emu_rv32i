@@ -210,27 +210,39 @@ size_t strlen(const char *s)
 	return p - s;
 }
 
-void *memcpy(void *dest, const void *src, size_t n)
-{
-	char *d = (char *)dest;
-	const char *s = (const char *)src;
-	for (size_t i = 0; i < n; ++i) {
-		d[i] = s[i];
-	}
-	return dest;
+void *memcpy(void *dest, const void *src, size_t n) {
+    char *d = (char *)dest;
+    const char *s = (const char *)src;
+
+    size_t i = 0;
+    for (; i + 4 <= n; i += 4) {
+        *(int *)(d + i) = *(const int *)(s + i);
+    }
+
+    for (; i < n; ++i) {
+        d[i] = s[i];
+    }
+
+    return dest;
 }
 
-__attribute__((optimize("Os")))
-void *memset(void *s, int c, size_t n)
-{
-	unsigned char *p = (unsigned char *)s;
-	unsigned char uc = (unsigned char)c;
+void *memset(void *s, int c, size_t n) {
+    unsigned char *p = (unsigned char *)s;
+    unsigned int value = (unsigned char)c;
 
-	for (size_t i = 0; i < n; ++i) {
-		p[i] = uc;
-	}
+    value |= (value << 8);
+    value |= (value << 16);
 
-	return s;
+    size_t i = 0;
+    for (; i + 4 <= n; i += 4) {
+        *(unsigned int *)(p + i) = value;
+    }
+
+    for (; i < n; ++i) {
+        p[i] = (unsigned char)c;
+    }
+
+    return s;
 }
 
 char *strcat(char *restrict dst, const char *restrict src)
