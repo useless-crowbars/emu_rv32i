@@ -210,6 +210,7 @@ size_t strlen(const char *s)
 	return p - s;
 }
 
+__attribute__((section(".critical")))
 void *memcpy(void *dest, const void *src, size_t n) {
     char *d = (char *)dest;
     const char *s = (const char *)src;
@@ -226,6 +227,7 @@ void *memcpy(void *dest, const void *src, size_t n) {
     return dest;
 }
 
+__attribute__((section(".critical")))
 void *memset(void *s, int c, size_t n) {
     unsigned char *p = (unsigned char *)s;
     unsigned int value = (unsigned char)c;
