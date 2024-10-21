@@ -34,7 +34,7 @@ SEG get_mem_seg(uint32_t address)
 		return KB;
 	}
 
-	if (STACK_BEGIN <= address && address <= STACK_END) {
+	if (address <= STACK_END) {
 		return STACK;
 	}
 
@@ -69,7 +69,7 @@ uint64_t get_mem_addr(uint32_t address)
 		return (uint64_t)&key_pressed;
 	}
 
-	if (STACK_BEGIN <= address && address < STACK_END) {
+	if (address < STACK_END) {
 		return (uint64_t)mem[STACK] + (address - STACK_BEGIN);
 	}
 
