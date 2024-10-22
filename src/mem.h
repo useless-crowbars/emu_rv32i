@@ -21,6 +21,8 @@
 #define STACK_BEGIN 0x00000000
 #define STACK_END 0x00003000
 
+#define STATS 0
+
 typedef enum { TEXT, DATA, BSS, RODATA, GPU, KB, STACK } SEG;
 
 extern void *mem[7];
@@ -33,5 +35,7 @@ uint32_t get_w(uint32_t address);
 void set_b(uint32_t address, uint8_t val);
 void set_hw(uint32_t address, uint16_t val);
 void set_w(uint32_t address, uint32_t val);
+
+void print_stats(void);
 
 #endif

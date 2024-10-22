@@ -2,6 +2,8 @@
 #include "mem.h"
 #include "gpu.h"
 #include "reg.h"
+#include <limits.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -74,7 +76,8 @@ int main()
 	const int32_t update_interval = 300000;
 	int32_t i = 0;
 
-	while (true) {
+	uint64_t limit = INT_MAX;
+	while(!STATS || limit) {
 		/*
 		int bri;
 		scanf("%d", &bri);
@@ -99,5 +102,7 @@ int main()
 			update_screen();
 			i = 0;
 		}
+		limit--;
 	}
+	print_stats();
 }

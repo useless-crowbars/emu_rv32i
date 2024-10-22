@@ -8,6 +8,8 @@
 
 void *mem[7];
 
+uint64_t* data_cnt = NULL;
+
 SEG get_mem_seg(uint32_t address)
 {
 	if (TEXT_BEGIN <= address && address < TEXT_END) {
@@ -45,7 +47,12 @@ SEG get_mem_seg(uint32_t address)
 
 uint64_t get_mem_addr(uint32_t address)
 {
+	if (data_cnt == NULL) {
+		data_cnt = (uint64_t*) calloc(0x10000000, sizeof(uint64_t));
+	}
+
 	if (TEXT_BEGIN <= address && address < TEXT_END) {
+		data_cnt[address - 0x10000000]++;
 		return (uint64_t)mem[TEXT] + (address - TEXT_BEGIN);
 	}
 
@@ -124,7 +131,7 @@ void set_b(uint32_t address, uint8_t val)
 void set_hw(uint32_t address, uint16_t val)
 {
 	SEG type = get_mem_seg(address);
-	if (type == TEXT || type == RODATA) {
+	if (/*type == TEXT ||*/ type == RODATA) {
 		printf("set_hw(): SEGFAULT\n");
 		print_regs();
 		exit(-1);
@@ -142,7 +149,7 @@ void set_hw(uint32_t address, uint16_t val)
 void set_w(uint32_t address, uint32_t val)
 {
 	SEG type = get_mem_seg(address);
-	if (type == TEXT || type == RODATA) {
+	if (/*type == TEXT ||*/ type == RODATA) {
 		printf("set_w(): SEGFAULT\n");
 		print_regs();
 		exit(-1);
@@ -155,4 +162,14 @@ void set_w(uint32_t address, uint32_t val)
 
 	uint32_t *addr = (uint32_t *)get_mem_addr(address);
 	*addr = val;
+}
+
+void print_stats() {
+	FILE* f = fopen("stats", "w");
+	for (int i = 0; i < 0x10000000; i++) {
+		if(data_cnt[i] > 0) {
+			fprintf(f, "%x -> %lu\n", i + 0x10000000, data_cnt[i]);
+		}
+	}
+	fclose(f);
 }

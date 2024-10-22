@@ -10,4 +10,4 @@ all:
 	gcc -O3 -Wno-unused-parameter -Wall -Werror -Wextra -Wshadow -Wcast-align -Wpointer-arith -Wmissing-prototypes -Wmissing-declarations -Wwrite-strings -Wredundant-decls -Wnested-externs -Winline -Wno-long-long -Wconversion -Wstrict-prototypes src/*.c -o emu_rv32i -lglfw -lGL && ./emu_rv32i
 
 clean:
-	rm -rf emdoom text.bin data.bin bss.bin rodata.bin emu_rv32i file
+	rm -rf emdoom text.bin data.bin bss.bin rodata.bin emu_rv32i file stats
