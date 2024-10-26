@@ -47,7 +47,7 @@ size_t open_file(const char *filename, void **ptr)
 
 void init_mem()
 {
-	mem[GPU] = malloc(0x4000); // 16kB
+	mem[GPU] = malloc(0x8000); // 16kB
 	mem[STACK] = malloc(0x1000); // 4kB
 
 	open_file("./text.bin", &mem[TEXT]);
@@ -96,7 +96,6 @@ int main()
 			printf("M[%x] = %d / %x\n", (uint32_t)addr, *real_addr, *real_addr);
 		}
 		*/
-
 		exec_instr();
 		if (i++ >= update_interval) {
 			update_screen();

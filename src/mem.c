@@ -3,6 +3,7 @@
 #include "gpu.h"
 #include "mem.h"
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -47,12 +48,12 @@ SEG get_mem_seg(uint32_t address)
 
 uint64_t get_mem_addr(uint32_t address)
 {
-	if (data_cnt == NULL) {
+	if (data_cnt == NULL && STATS) {
 		data_cnt = (uint64_t*) calloc(0x10000000, sizeof(uint64_t));
 	}
 
 	if (TEXT_BEGIN <= address && address < TEXT_END) {
-		data_cnt[address - 0x10000000]++;
+		if(STATS) data_cnt[address - 0x10000000]++;
 		return (uint64_t)mem[TEXT] + (address - TEXT_BEGIN);
 	}
 
@@ -106,22 +107,13 @@ uint32_t get_w(uint32_t address)
 void set_b(uint32_t address, uint8_t val)
 {
 	SEG type = get_mem_seg(address);
-	if (type == TEXT || type == RODATA) {
+	if (/*type == TEXT ||*/ type == RODATA) {
 		printf("set_b(): SEGFAULT\n");
 		print_regs();
 		exit(-1);
 	}
 
 	if (type == GPU) {
-		uint32_t color = 0xff1f1f1f;
-		// BGR (2,3,3)
-		color |= (val & 0x07) << 5;
-		color |= (val & 0x38) << (13 - 3);
-		color |= (val & 0xc0) << (22 - 6);
-
-		uint32_t off = (address - GPU_BEGIN);
-
-		write_screen((int)(off % SCREEN_WIDTH), (int)(off / SCREEN_WIDTH), color);
 	}
 
 	uint8_t *addr = (uint8_t *)get_mem_addr(address);
@@ -167,7 +159,7 @@ void set_w(uint32_t address, uint32_t val)
 void print_stats() {
 	FILE* f = fopen("stats", "w");
 	for (int i = 0; i < 0x10000000; i++) {
-		if(data_cnt[i] > 0) {
+		if(data_cnt[i] > 500000) {
 			fprintf(f, "%x -> %lu\n", i + 0x10000000, data_cnt[i]);
 		}
 	}
