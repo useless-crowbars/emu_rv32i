@@ -107,13 +107,10 @@ uint32_t get_w(uint32_t address)
 void set_b(uint32_t address, uint8_t val)
 {
 	SEG type = get_mem_seg(address);
-	if (/*type == TEXT ||*/ type == RODATA) {
+	if (type == RODATA) {
 		printf("set_b(): SEGFAULT\n");
 		print_regs();
 		exit(-1);
-	}
-
-	if (type == GPU) {
 	}
 
 	uint8_t *addr = (uint8_t *)get_mem_addr(address);
@@ -123,7 +120,7 @@ void set_b(uint32_t address, uint8_t val)
 void set_hw(uint32_t address, uint16_t val)
 {
 	SEG type = get_mem_seg(address);
-	if (/*type == TEXT ||*/ type == RODATA) {
+	if (type == RODATA) {
 		printf("set_hw(): SEGFAULT\n");
 		print_regs();
 		exit(-1);
@@ -141,7 +138,7 @@ void set_hw(uint32_t address, uint16_t val)
 void set_w(uint32_t address, uint32_t val)
 {
 	SEG type = get_mem_seg(address);
-	if (/*type == TEXT ||*/ type == RODATA) {
+	if (type == RODATA) {
 		printf("set_w(): SEGFAULT\n");
 		print_regs();
 		exit(-1);

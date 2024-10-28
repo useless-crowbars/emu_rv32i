@@ -67,7 +67,7 @@ uint8_t status= 0;
 void update_screen()
 {
 
-	uint8_t gpu_begin = get_b(0x10031fff);
+	uint8_t gpu_begin = get_b(0x20008000);
 	if(status != gpu_begin) {
 		status = gpu_begin;
 		for(int i = 0; i < SCREEN_HEIGHT; i++) {
