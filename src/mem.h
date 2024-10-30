@@ -10,9 +10,10 @@
 #define DATA_BEGIN 0x10040000
 #define DATA_END 0x10050000
 #define BSS_BEGIN 0x10050000
-#define BSS_END 0x10150000
-#define RODATA_BEGIN 0x10150000
+#define BSS_END 0x10100000
+#define RODATA_BEGIN 0x10100000
 #define RODATA_END 0x14000000
+#define BUFFER_SWITCH 0x50000008
 
 #define GPU_BEGIN 0x20000000
 #define GPU_END 0x20010000
@@ -21,11 +22,11 @@
 #define STACK_BEGIN 0x00000000
 #define STACK_END 0x00003000
 
-#define STATS 0
+#define STATS 1
 
-typedef enum { TEXT, DATA, BSS, RODATA, GPU, KB, STACK } SEG;
+typedef enum { TEXT, DATA, BSS, RODATA, GPU, KB, STACK, REG } SEG;
 
-extern void *mem[7];
+extern void *mem[8];
 
 SEG get_mem_seg(uint32_t address);
 uint64_t get_mem_addr(uint32_t address);

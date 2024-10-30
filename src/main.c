@@ -49,6 +49,7 @@ void init_mem()
 {
 	mem[GPU] = malloc(0x8001); // 16kB
 	mem[STACK] = malloc(0x1000); // 4kB
+	mem[REG] = malloc(0x1);
 
 	open_file("./text.bin", &mem[TEXT]);
 	mem[DATA] = malloc(0x10000); // 64kB

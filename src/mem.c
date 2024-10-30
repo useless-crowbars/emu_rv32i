@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void *mem[7];
+void *mem[8];
 
 uint64_t* data_cnt = NULL;
 
@@ -39,6 +39,10 @@ SEG get_mem_seg(uint32_t address)
 
 	if (STACK_BEGIN < address && address <= STACK_END) {
 		return STACK;
+	}
+
+	if(address == BUFFER_SWITCH) {
+		return REG;
 	}
 
 	printf("get_mem_seg(): SEGFAULT\n");
@@ -79,6 +83,10 @@ uint64_t get_mem_addr(uint32_t address)
 
 	if (STACK_BEGIN < address && address <= STACK_END) {
 		return (uint64_t)mem[STACK] + (address - STACK_BEGIN);
+	}
+
+	if(address == BUFFER_SWITCH) {
+		return (uint64_t)mem[REG];
 	}
 
 	printf("get_mem_addr(): SEGFAULT");

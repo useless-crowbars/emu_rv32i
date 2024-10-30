@@ -67,14 +67,14 @@ uint8_t status= 0;
 void update_screen()
 {
 
-	uint8_t gpu_begin = get_b(0x20008000);
+	uint8_t gpu_begin = get_b(0x50000008);
 	if(status != gpu_begin) {
 		status = gpu_begin;
 		for(int i = 0; i < SCREEN_HEIGHT; i++) {
 			for(int j = 0; j < SCREEN_WIDTH; j++) {
 				uint32_t color = 0xff1f1f1f;
 
-				uint8_t val = *((uint8_t*)mem[GPU] + gpu_begin* 0x4000 + i* SCREEN_WIDTH + j);
+				uint8_t val = *((uint8_t*)mem[GPU] + (!gpu_begin)* 0x4000 + i* SCREEN_WIDTH + j);
 				color |= (val & 0x07) << 5;
 				color |= (val & 0x38) << (13 - 3);
 				color |= (val & 0xc0) << (22 - 6);
