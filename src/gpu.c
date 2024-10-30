@@ -162,6 +162,15 @@ void key_callback(GLFWwindow *w, int key, int scancode, int action, int mods)
 				}
 			}
 			break;
+		case GLFW_KEY_ESCAPE:
+			{
+				if (action == GLFW_PRESS) {
+					key_pressed |= KB_ESC;
+				} else if (action == GLFW_RELEASE) {
+					key_pressed &= (uint8_t)~KB_ESC;
+				}
+			}
+			break;
 		default:
 			break;
 	}
