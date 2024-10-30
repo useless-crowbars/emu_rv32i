@@ -960,6 +960,12 @@ void arith_instr()
 void unimplemented()
 {
 	printf("unimplemented(): unimplemented instr\n");
+	for (int i = 10; i < 15; i++) {
+		if (RODATA_BEGIN <= x[i] && x[i] < RODATA_END) {
+			printf("x[%d] = %s\n", i, (char*)get_mem_addr(x[i]));
+		}
+	}
+
 	print_regs();
 	exit(-1);
 	// fence
