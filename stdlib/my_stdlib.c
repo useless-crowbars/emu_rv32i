@@ -16,6 +16,7 @@ char *strcpy(char *restrict dst, const char *restrict src)
 	return tmp;
 }
 
+__attribute__((section(".critical")))
 char *strncpy(char *dst, const char *src, size_t n)
 {
 	char *start = dst;

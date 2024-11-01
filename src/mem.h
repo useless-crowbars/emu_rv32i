@@ -6,12 +6,14 @@
 #include <stdbool.h>
 
 #define TEXT_BEGIN 0x10000000
-#define TEXT_END 0x10040000
-#define DATA_BEGIN 0x10040000
-#define DATA_END 0x10050000
-#define BSS_BEGIN 0x10050000
-#define BSS_END 0x10100000
-#define RODATA_BEGIN 0x10100000
+#define TEXT_END 0x10031c00
+#define CRITICAL_BEGIN 0x10031c00
+#define CRITICAL_END 0x10032000
+#define DATA_BEGIN 0x10032000
+#define DATA_END 0x10040000
+#define BSS_BEGIN 0x10040000
+#define BSS_END 0x100c0000
+#define RODATA_BEGIN 0x100c0000
 #define RODATA_END 0x14000000
 #define BUFFER_SWITCH 0x50000008
 
@@ -22,11 +24,11 @@
 #define STACK_BEGIN 0x00000000
 #define STACK_END 0x00003000
 
-#define STATS 1
+#define STATS 0
 
-typedef enum { TEXT, DATA, BSS, RODATA, GPU, KB, STACK, REG } SEG;
+typedef enum { TEXT, DATA, BSS, RODATA, GPU, KB, STACK, REG, CRITICAL } SEG;
 
-extern void *mem[8];
+extern void *mem[9];
 
 SEG get_mem_seg(uint32_t address);
 uint64_t get_mem_addr(uint32_t address);

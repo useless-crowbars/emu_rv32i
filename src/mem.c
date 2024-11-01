@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void *mem[8];
+void *mem[9];
 
 uint64_t* data_cnt = NULL;
 
@@ -15,6 +15,10 @@ SEG get_mem_seg(uint32_t address)
 {
 	if (TEXT_BEGIN <= address && address < TEXT_END) {
 		return TEXT;
+	}
+
+	if (CRITICAL_BEGIN <= address && address < CRITICAL_END) {
+		return CRITICAL;
 	}
 
 	if (DATA_BEGIN <= address && address < DATA_END) {
@@ -61,6 +65,10 @@ uint64_t get_mem_addr(uint32_t address)
 		return (uint64_t)mem[TEXT] + (address - TEXT_BEGIN);
 	}
 
+	if (CRITICAL_BEGIN <= address && address < CRITICAL_END) {
+		return (uint64_t)mem[CRITICAL] + (address - CRITICAL_BEGIN);
+	}
+
 	if (DATA_BEGIN <= address && address < DATA_END) {
 		return (uint64_t)mem[DATA] + (address - DATA_BEGIN);
 	}
@@ -89,7 +97,7 @@ uint64_t get_mem_addr(uint32_t address)
 		return (uint64_t)mem[REG];
 	}
 
-	printf("get_mem_addr(): SEGFAULT");
+	printf("get_mem_addr(): SEGFAULT\naddress: %x\n", address);
 	print_regs();
 	exit(-1);
 }
@@ -115,7 +123,7 @@ uint32_t get_w(uint32_t address)
 void set_b(uint32_t address, uint8_t val)
 {
 	SEG type = get_mem_seg(address);
-	if (type == RODATA) {
+	if (type == TEXT || type == RODATA) {
 		printf("set_b(): SEGFAULT\n");
 		print_regs();
 		exit(-1);
@@ -128,7 +136,7 @@ void set_b(uint32_t address, uint8_t val)
 void set_hw(uint32_t address, uint16_t val)
 {
 	SEG type = get_mem_seg(address);
-	if (type == RODATA) {
+	if (type == TEXT || type == RODATA) {
 		printf("set_hw(): SEGFAULT\n");
 		print_regs();
 		exit(-1);
@@ -146,7 +154,7 @@ void set_hw(uint32_t address, uint16_t val)
 void set_w(uint32_t address, uint32_t val)
 {
 	SEG type = get_mem_seg(address);
-	if (type == RODATA) {
+	if (type == TEXT || type == RODATA) {
 		printf("set_w(): SEGFAULT\n");
 		print_regs();
 		exit(-1);
