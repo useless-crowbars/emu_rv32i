@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #define MAX_INT 2147483647
 
+__attribute__((section(".critical")))
 int abs(int j)
 {
 	return (j >= 0) ? j : -j;

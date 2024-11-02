@@ -66,14 +66,17 @@ uint64_t get_mem_addr(uint32_t address)
 	}
 
 	if (CRITICAL_BEGIN <= address && address < CRITICAL_END) {
+		if(STATS) data_cnt[address - 0x10000000]++;
 		return (uint64_t)mem[CRITICAL] + (address - CRITICAL_BEGIN);
 	}
 
 	if (DATA_BEGIN <= address && address < DATA_END) {
+		if(STATS) data_cnt[address - 0x10000000]++;
 		return (uint64_t)mem[DATA] + (address - DATA_BEGIN);
 	}
 
 	if (BSS_BEGIN <= address && address < BSS_END) {
+		if(STATS) data_cnt[address - 0x10000000]++;
 		return (uint64_t)mem[BSS] + (address - BSS_BEGIN);
 	}
 
