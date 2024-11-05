@@ -6,8 +6,8 @@ mem_size = 4 * 1024 * 1024
 sections = {
     'text':   (0x10000000, 'text.bin'),
     'data':   (0x10032000, 'data.bin'),
-    'bss':    (0x10040000, None),
-    'rodata': (0x100c0000, 'rodata.bin'),
+    'bss':    (0x1003e600, None),
+    'rodata': (0x100b6d00, 'rodata.bin'),
 }
 
 memory_file = bytearray(mem_size)
