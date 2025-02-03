@@ -52,7 +52,7 @@ void init_mem()
 	mem[STACK] = malloc(0x1000); // 4kB
 	mem[REG] = malloc(sizeof(uint8_t));
 
-	open_file("./text.bin", &mem[TEXT]);
+	open_file("./emu_rv32i/text.bin", &mem[TEXT]);
 	mem[DATA] = malloc(0x10000); // 64kB
 	if (mem[DATA] == NULL) {
 		printf("mem[DATA] == NULL\n");
@@ -63,10 +63,10 @@ void init_mem()
 		printf("mem[BSS] == NULL\n");
 		exit(-1);
 	}
-	open_file("rodata.bin", &mem[RODATA]);
+	open_file("./emu_rv32i/rodata.bin", &mem[RODATA]);
 
 	uint8_t *data_copy;
-	size_t data_len = open_file("data.bin", (void **)&data_copy);
+	size_t data_len = open_file("./emu_rv32i/data.bin", (void **)&data_copy);
 	memcpy(mem[DATA], data_copy, data_len);
 }
 
