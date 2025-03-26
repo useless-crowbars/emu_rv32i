@@ -66,6 +66,10 @@ uint8_t status= 0;
 
 void update_screen()
 {
+	if (glfwWindowShouldClose(window)) {
+        cleanup();
+        exit(0);
+    }
 
 	uint8_t gpu_begin = get_b(0x50000008);
 	if(status != gpu_begin) {
