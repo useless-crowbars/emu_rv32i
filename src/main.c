@@ -1,78 +1,20 @@
 #include "instr.h"
+#include "elf.h"
 #include "mem.h"
 #include "gpu.h"
-#include "reg.h"
 #include <limits.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/fcntl.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <unistd.h>
 
-size_t open_file(const char *filename, void **ptr);
-void init_mem(void);
-int main(void);
-
-size_t open_file(const char *filename, void **ptr)
+int main(int argc, char *argv[])
 {
-	int text_fd;
-	struct stat st;
-	size_t len_file;
+    if (argc != 2) {
+        fprintf(stderr, "Usage: %s <elf_file> \n", argv[0]);
+        return EXIT_FAILURE;
+    }
 
-	text_fd = open(filename, O_RDONLY);
-	if (text_fd == -1) {
-		perror("open");
-		exit(EXIT_FAILURE);
-	}
-
-	if (fstat(text_fd, &st) == -1) {
-		perror("fstat");
-		close(text_fd);
-		exit(EXIT_FAILURE);
-	}
-	len_file = (size_t)st.st_size;
-
-	*ptr = mmap(NULL, len_file, PROT_READ, MAP_SHARED, text_fd, 0);
-	if (*ptr == MAP_FAILED) {
-		perror("mmap");
-		close(text_fd);
-		exit(EXIT_FAILURE);
-	}
-
-	return len_file;
-}
-
-void init_mem()
-{
-	mem[CRITICAL] = calloc(0x800, sizeof(uint8_t));
-	mem[GPU] = malloc(0x8001); // 16kB
-	mem[STACK] = malloc(0x1000); // 4kB
-	mem[REG] = malloc(sizeof(uint8_t));
-
-	open_file("./emu_rv32i/text.bin", &mem[TEXT]);
-	mem[DATA] = malloc(0x10000); // 64kB
-	if (mem[DATA] == NULL) {
-		printf("mem[DATA] == NULL\n");
-		exit(-1);
-	}
-	mem[BSS] = calloc(0x100000, sizeof(uint8_t)); // 1MB
-	if (mem[BSS] == NULL) {
-		printf("mem[BSS] == NULL\n");
-		exit(-1);
-	}
-	open_file("./emu_rv32i/rodata.bin", &mem[RODATA]);
-
-	uint8_t *data_copy;
-	size_t data_len = open_file("./emu_rv32i/data.bin", (void **)&data_copy);
-	memcpy(mem[DATA], data_copy, data_len);
-}
-
-int main()
-{
-	init_mem();
+	load_elf(argv[1]);
 	init_screen();
 
 	const int32_t update_interval = 300000;
