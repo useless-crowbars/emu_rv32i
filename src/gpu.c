@@ -39,12 +39,6 @@ void init_screen()
 	if (!screen) {
 		exit(1);
 	}
-
-	for (int y = 0; y < GPU_SCREEN_HEIGHT; y++) {
-		for (int x = 0; x < GPU_SCREEN_WIDTH; x++) {
-			screen[y * GPU_SCREEN_WIDTH + x] = 0xffff0000;
-		}
-	}
 }
 
 void write_screen(int x, int y, uint32_t color)
