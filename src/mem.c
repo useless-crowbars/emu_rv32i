@@ -1,4 +1,3 @@
-#include "instr.h"
 #include "reg.h"
 #include "gpu.h"
 #include "mem.h"
@@ -7,13 +6,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+uint64_t text_begin = 0;
+uint64_t text_end = 0;
+uint64_t data_begin = 0;
+uint64_t data_end = 0;
+uint64_t bss_begin = 0;
+uint64_t bss_end = 0;
+uint64_t rodata_begin = 0;
+uint64_t rodata_end = 0;
+
 void *mem[9];
 
 uint64_t* data_cnt = NULL;
 
 SEG get_mem_seg(uint32_t address)
 {
-	if (TEXT_BEGIN <= address && address < TEXT_END) {
+	if (text_begin <= address && address < text_end) {
 		return TEXT;
 	}
 
@@ -21,15 +29,15 @@ SEG get_mem_seg(uint32_t address)
 		return CRITICAL;
 	}
 
-	if (DATA_BEGIN <= address && address < DATA_END) {
+	if (data_begin <= address && address < data_end) {
 		return DATA;
 	}
 
-	if (BSS_BEGIN <= address && address < BSS_END) {
+	if (bss_begin <= address && address < bss_end) {
 		return BSS;
 	}
 
-	if (RODATA_BEGIN <= address && address < RODATA_END) {
+	if (rodata_begin <= address && address < rodata_end) {
 		return RODATA;
 	}
 
@@ -60,9 +68,9 @@ uint64_t get_mem_addr(uint32_t address)
 		data_cnt = (uint64_t*) calloc(0x10000000, sizeof(uint64_t));
 	}
 
-	if (TEXT_BEGIN <= address && address < TEXT_END) {
+	if (text_begin <= address && address < text_end) {
 		if(STATS) data_cnt[address - 0x10000000]++;
-		return (uint64_t)mem[TEXT] + (address - TEXT_BEGIN);
+		return (uint64_t)mem[TEXT] + (address - text_begin);
 	}
 
 	if (CRITICAL_BEGIN <= address && address < CRITICAL_END) {
@@ -70,18 +78,18 @@ uint64_t get_mem_addr(uint32_t address)
 		return (uint64_t)mem[CRITICAL] + (address - CRITICAL_BEGIN);
 	}
 
-	if (DATA_BEGIN <= address && address < DATA_END) {
+	if (data_begin <= address && address < data_end) {
 		if(STATS) data_cnt[address - 0x10000000]++;
-		return (uint64_t)mem[DATA] + (address - DATA_BEGIN);
+		return (uint64_t)mem[DATA] + (address - data_begin);
 	}
 
-	if (BSS_BEGIN <= address && address < BSS_END) {
+	if (bss_begin <= address && address < bss_end) {
 		if(STATS) data_cnt[address - 0x10000000]++;
-		return (uint64_t)mem[BSS] + (address - BSS_BEGIN);
+		return (uint64_t)mem[BSS] + (address - bss_begin);
 	}
 
-	if (RODATA_BEGIN <= address && address < RODATA_END) {
-		return (uint64_t)mem[RODATA] + (address - RODATA_BEGIN);
+	if (rodata_begin <= address && address < rodata_end) {
+		return (uint64_t)mem[RODATA] + (address - rodata_begin);
 	}
 
 	if (GPU_BEGIN <= address && address < GPU_END) {

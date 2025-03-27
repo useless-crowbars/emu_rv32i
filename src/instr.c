@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-uint32_t pc = 0x10000000;
+uint32_t pc = 0x0;
 uint32_t x[32];
 uint32_t instr;
 int64_t brojac = 0;
@@ -961,7 +961,7 @@ void unimplemented()
 {
 	printf("unimplemented(): unimplemented instr\n");
 	for (int i = 10; i < 15; i++) {
-		if (RODATA_BEGIN <= x[i] && x[i] < RODATA_END) {
+		if (rodata_begin <= x[i] && x[i] < rodata_end) {
 			printf("x[%d] = %s\n", i, (char*)get_mem_addr(x[i]));
 		}
 	}

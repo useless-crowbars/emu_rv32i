@@ -5,24 +5,24 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define TEXT_BEGIN 0x10000000
-#define TEXT_END 0x10031c00
+extern uint64_t text_begin;
+extern uint64_t text_end;
+extern uint64_t data_begin;
+extern uint64_t data_end;
+extern uint64_t bss_begin;
+extern uint64_t bss_end;
+extern uint64_t rodata_begin;
+extern uint64_t rodata_end;
+
+#define STACK_BEGIN 0x00000000
+#define STACK_END 0x00003000
 #define CRITICAL_BEGIN 0x10031c00
 #define CRITICAL_END 0x10032000
-#define DATA_BEGIN 0x10032000
-#define DATA_END 0x1003e600
-#define BSS_BEGIN 0x1003e600
-#define BSS_END 0x100b6d00
-#define RODATA_BEGIN 0x100b6d00
-#define RODATA_END 0x14000000
-#define BUFFER_SWITCH 0x50000008
-
 #define GPU_BEGIN 0x20000000
 #define GPU_END 0x20010000
 #define KB_BEGIN 0x30000000
 #define KB_END 0x30000001
-#define STACK_BEGIN 0x00000000
-#define STACK_END 0x00003000
+#define BUFFER_SWITCH 0x50000008
 
 #define STATS 0
 
