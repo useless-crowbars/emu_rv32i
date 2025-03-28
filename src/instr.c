@@ -1,6 +1,7 @@
 #include "instr.h"
 #include "mem.h"
 #include "reg.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -69,12 +70,6 @@ void addi()
 				printf("IZASAO %ld\n", brojac);
 			}
 		}
-	}
-
-	if (brojac < 0) {
-		printf("ERROR");
-		print_regs();
-		exit(-1);
 	}
 
 	x[rd] = x[rs1] + imm;
@@ -255,19 +250,19 @@ void sltu()
 }
 
 void xor
-	() {
-		size_t rd = (instr >> 7) & 0x1f;
-		size_t rs1 = (instr >> 15) & 0x1f;
-		size_t rs2 = (instr >> 20) & 0x1f;
+() {
+	size_t rd = (instr >> 7) & 0x1f;
+	size_t rs1 = (instr >> 15) & 0x1f;
+	size_t rs2 = (instr >> 20) & 0x1f;
 
-		if (PRINT) {
-			printf("xor %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
-		}
-
-		x[rd] = x[rs1] ^ x[rs2];
+	if (PRINT) {
+		printf("xor %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	void srl()
+	x[rd] = x[rs1] ^ x[rs2];
+}
+
+void srl()
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -545,14 +540,21 @@ void jalr()
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
 	uint32_t off = instr >> 20;
-	off = sext(off, 20);
+	off = sext(off, 12);
 
 	if (PRINT) {
 		printf("jalr %s, %s, %x\n", regs[rd], regs[rs1], off);
 	}
 
 	uint32_t t = pc;
-	pc = (x[rs1] + off) & ~1U;
+	uint32_t new_pc = (x[rs1] + off) & ~1U;
+
+	if (new_pc < text_begin || new_pc > text_end) {
+		printf("EXCEPTION: Invalid memory address (out of range) %x\n", new_pc);
+		return;
+	}
+
+	pc = new_pc;
 	x[rd] = t;
 }
 
@@ -688,44 +690,44 @@ void imm_arith_instr()
 	uint32_t op3 = (instr >> 27);
 
 	switch (op2) {
-	case 0b000:
-		addi();
-		break;
-	case 0b010:
-		slti();
-		break;
-	case 0b011:
-		sltiu();
-		break;
-	case 0b100:
-		xori();
-		break;
-	case 0b110:
-		ori();
-		break;
-	case 0b111:
-		andi();
-		break;
-	case 0b001:
-		slli();
-		break;
-	case 0b101:
-		switch (op3) {
-		case 0b00000:
-			srli();
+		case 0b000:
+			addi();
 			break;
-		case 0b01000:
-			srai();
+		case 0b010:
+			slti();
+			break;
+		case 0b011:
+			sltiu();
+			break;
+		case 0b100:
+			xori();
+			break;
+		case 0b110:
+			ori();
+			break;
+		case 0b111:
+			andi();
+			break;
+		case 0b001:
+			slli();
+			break;
+		case 0b101:
+			switch (op3) {
+				case 0b00000:
+					srli();
+					break;
+				case 0b01000:
+					srai();
+					break;
+				default:
+					printf("imm_arith_instr(): srli/srai: invalid opcode %d\n", op3);
+					exit(-1);
+					break;
+			}
 			break;
 		default:
-			printf("imm_arith_instr(): srli/srai: invalid opcode %d\n", op3);
+			printf("imm_arith_instr(): invalid opcode %d\n", op2);
 			exit(-1);
-			break;
-		}
-		break;
-	default:
-		printf("imm_arith_instr(): invalid opcode %d\n", op2);
-		exit(-1);
 	}
 }
 
@@ -793,7 +795,13 @@ void _div()
 
 	if (!x[rs2]) {
 		printf("EXCEPTION: division by zero\n");
-		exit(-1);
+		x[rd] = (uint32_t)-1;
+		return;
+	}
+
+	if(x[rs2] == (uint32_t)-1) {
+		x[rd] = (uint32_t)(-((int32_t)x[rs1]));
+		return;
 	}
 
 	x[rd] = (uint32_t)((int32_t)x[rs1] / (int32_t)x[rs2]);
@@ -811,7 +819,8 @@ void divu()
 
 	if (!x[rs2]) {
 		printf("EXCEPTION: mod zero\n");
-		exit(-1);
+		x[rd] = (uint32_t)-1;
+		return;
 	}
 
 	x[rd] = x[rs1] / x[rs2];
@@ -824,8 +833,13 @@ void rem()
 	size_t rs2 = (instr >> 20) & 0x1f;
 
 	if (!x[rs2]) {
-		printf("EXCEPTION: mod zero\n");
-		exit(-1);
+		x[rd] = x[rs1];
+		return;
+	}
+
+	if (x[rs2] == (uint32_t)-1) {
+		x[rd] = 0;
+		return;
 	}
 
 	if (PRINT) {
@@ -846,8 +860,8 @@ void remu()
 	}
 
 	if (!x[rs2]) {
-		printf("EXCEPTION: division by zero\n");
-		exit(-1);
+		x[rd] = x[rs1];
+		return;
 	}
 
 	x[rd] = x[rs1] % x[rs2];
@@ -860,100 +874,100 @@ void arith_instr()
 	uint32_t op4 = (instr >> 25) & 0x3;
 
 	switch (op4) {
-	case 0b01:
-		// rv32m
-		switch (op2) {
-		case 0b000:
-			mul();
-			break;
-		case 0b001:
-			mulh();
-			break;
-		case 0b010:
-			mulhsu();
-			break;
-		case 0b011:
-			mulhu();
-			break;
-		case 0b100:
-			_div();
-			break;
-		case 0b101:
-			divu();
-			break;
-		case 0b110:
-			rem();
-			break;
-		case 0b111:
-			remu();
-			break;
-		default:
-			printf("arith_instr(): invalid op2 %d\n", op2);
-			exit(-1);
-			break;
-		}
-		break;
-
-	case 0b00:
-		// rv32i
-		switch (op2) {
-		case 0b000:
-			switch (op3) {
-			case 0b00000:
-				add();
-				break;
-			case 0b01000:
-				sub();
-				break;
-			default:
-				printf("arith_instr(): 0b000 %d\n", op3);
-				exit(-1);
-				break;
+		case 0b01:
+			// rv32m
+			switch (op2) {
+				case 0b000:
+					mul();
+					break;
+				case 0b001:
+					mulh();
+					break;
+				case 0b010:
+					mulhsu();
+					break;
+				case 0b011:
+					mulhu();
+					break;
+				case 0b100:
+					_div();
+					break;
+				case 0b101:
+					divu();
+					break;
+				case 0b110:
+					rem();
+					break;
+				case 0b111:
+					remu();
+					break;
+				default:
+					printf("arith_instr(): invalid op2 %d\n", op2);
+					exit(-1);
+					break;
 			}
 			break;
-		case 0b001:
-			sll();
-			break;
-		case 0b010:
-			slt();
-			break;
-		case 0b011:
-			sltu();
-			break;
-		case 0b100:
-			xor();
-			break;
-		case 0b101:
-			switch (op3) {
-			case 0b00000:
-				srl();
-				break;
-			case 0b01000:
-				sra();
-				break;
-			default:
-				printf("arith_instr(): 0b101 %d\n", op3);
-				exit(-1);
-				break;
+
+		case 0b00:
+			// rv32i
+			switch (op2) {
+				case 0b000:
+					switch (op3) {
+						case 0b00000:
+							add();
+							break;
+						case 0b01000:
+							sub();
+							break;
+						default:
+							printf("arith_instr(): 0b000 %d\n", op3);
+							exit(-1);
+							break;
+					}
+					break;
+				case 0b001:
+					sll();
+					break;
+				case 0b010:
+					slt();
+					break;
+				case 0b011:
+					sltu();
+					break;
+				case 0b100:
+					xor();
+					break;
+				case 0b101:
+					switch (op3) {
+						case 0b00000:
+							srl();
+							break;
+						case 0b01000:
+							sra();
+							break;
+						default:
+							printf("arith_instr(): 0b101 %d\n", op3);
+							exit(-1);
+							break;
+					}
+					break;
+				case 0b110:
+					or ();
+					break;
+				case 0b111:
+					and();
+					break;
+				default:
+					printf("arith_instr(): invalid op2 %d\n", op2);
+					exit(-1);
+					break;
 			}
 			break;
-		case 0b110:
-			or ();
-			break;
-		case 0b111:
-			and();
-			break;
+
 		default:
-			printf("arith_instr(): invalid op2 %d\n", op2);
+			printf("arith_instr(): invalid op4 %d\n", op4);
 			exit(-1);
 			break;
-		}
-		break;
-
-	default:
-		printf("arith_instr(): invalid op4 %d\n", op4);
-		exit(-1);
-		break;
 	}
 }
 
@@ -990,24 +1004,24 @@ void load()
 	uint32_t op2 = (instr >> 12) & 0x7;
 
 	switch (op2) {
-	case 0b000:
-		lb();
-		break;
-	case 0b001:
-		lh();
-		break;
-	case 0b010:
-		lw();
-		break;
-	case 0b100:
-		lbu();
-		break;
-	case 0b101:
-		lhu();
-		break;
-	default:
-		printf("load(): invalid opcode %d\n", op2);
-		exit(-1);
+		case 0b000:
+			lb();
+			break;
+		case 0b001:
+			lh();
+			break;
+		case 0b010:
+			lw();
+			break;
+		case 0b100:
+			lbu();
+			break;
+		case 0b101:
+			lhu();
+			break;
+		default:
+			printf("load(): invalid opcode %d\n", op2);
+			exit(-1);
 	}
 }
 
@@ -1016,18 +1030,18 @@ void store()
 	uint32_t op2 = (instr >> 12) & 0x7;
 
 	switch (op2) {
-	case 0b000:
-		sb();
-		break;
-	case 0b001:
-		sh();
-		break;
-	case 0b010:
-		sw();
-		break;
-	default:
-		printf("store(): invalid opcode %d\n", op2);
-		exit(-1);
+		case 0b000:
+			sb();
+			break;
+		case 0b001:
+			sh();
+			break;
+		case 0b010:
+			sw();
+			break;
+		default:
+			printf("store(): invalid opcode %d\n", op2);
+			exit(-1);
 	}
 }
 
@@ -1036,27 +1050,27 @@ void jump()
 	uint32_t op2 = (instr >> 12) & 0x7;
 
 	switch (op2) {
-	case 0b000:
-		beq();
-		break;
-	case 0b001:
-		bne();
-		break;
-	case 0b100:
-		blt();
-		break;
-	case 0b101:
-		bge();
-		break;
-	case 0b110:
-		bltu();
-		break;
-	case 0b111:
-		bgeu();
-		break;
-	default:
-		printf("jump(): invalid opcode %d\n", op2);
-		exit(-1);
+		case 0b000:
+			beq();
+			break;
+		case 0b001:
+			bne();
+			break;
+		case 0b100:
+			blt();
+			break;
+		case 0b101:
+			bge();
+			break;
+		case 0b110:
+			bltu();
+			break;
+		case 0b111:
+			bgeu();
+			break;
+		default:
+			printf("jump(): invalid opcode %d\n", op2);
+			exit(-1);
 	}
 }
 
@@ -1085,41 +1099,41 @@ void exec_instr()
 	uint32_t op1 = (instr >> 2) & 0x1f;
 
 	switch (op1) {
-	case 0b01101:
-		lui();
-		break;
-	case 0b00101:
-		auipc();
-		break;
-	case 0b00100:
-		imm_arith_instr();
-		break;
-	case 0b01100:
-		arith_instr();
-		break;
-	case 0b00011:
-	case 0b11100:
-		unimplemented();
-		break;
-	case 0b00000:
-		load();
-		break;
-	case 0b01000:
-		store();
-		break;
-	case 0b11011:
-		jal();
-		break;
-	case 0b11001:
-		jalr();
-		break;
-	case 0b11000:
-		jump();
-		break;
-	default:
-		printf("exec_instr(): invalid opcode\n");
-		exit(-1);
-		break;
+		case 0b01101:
+			lui();
+			break;
+		case 0b00101:
+			auipc();
+			break;
+		case 0b00100:
+			imm_arith_instr();
+			break;
+		case 0b01100:
+			arith_instr();
+			break;
+		case 0b00011:
+		case 0b11100:
+			unimplemented();
+			break;
+		case 0b00000:
+			load();
+			break;
+		case 0b01000:
+			store();
+			break;
+		case 0b11011:
+			jal();
+			break;
+		case 0b11001:
+			jalr();
+			break;
+		case 0b11000:
+			jump();
+			break;
+		default:
+			printf("exec_instr(): invalid opcode\n");
+			exit(-1);
+			break;
 	}
 	x[0] = 0;
 	ukupan_broj++;
