@@ -15,7 +15,7 @@ extern uint64_t rodata_begin;
 extern uint64_t rodata_end;
 
 #define STACK_BEGIN 0x00000000
-#define STACK_END 0x00003000
+#define STACK_END 0x00010000
 #define CRITICAL_BEGIN 0x10031c00
 #define CRITICAL_END 0x10032000
 #define GPU_BEGIN 0x20000000

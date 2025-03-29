@@ -61,7 +61,6 @@ uint8_t status= 0;
 void update_screen()
 {
 	if (glfwWindowShouldClose(window)) {
-        cleanup();
         exit(0);
     }
 

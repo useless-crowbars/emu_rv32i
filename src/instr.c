@@ -759,15 +759,23 @@ void mulh()
 
 void mulhsu()
 {
-	size_t rd = (instr >> 7) & 0x1f;
-	size_t rs1 = (instr >> 15) & 0x1f;
-	size_t rs2 = (instr >> 20) & 0x1f;
+	size_t rd = (instr >> 7) & 0x1F;
+	size_t rs1 = (instr >> 15) & 0x1F;
+	size_t rs2 = (instr >> 20) & 0x1F;
 
 	if (PRINT) {
 		printf("mulhsu %s, %s, %s\n", regs[rd], regs[rs1], regs[rs2]);
 	}
 
-	x[rd] = (uint32_t)((uint64_t)((int64_t)x[rs1] * (uint64_t)x[rs2]) >> 32);
+	int64_t op1 = (int32_t)x[rs1];
+	uint64_t op2 = (uint32_t)x[rs2];
+
+	int64_t result = op1 * (int64_t)op2;
+	uint32_t high_bits = (uint32_t)((uint64_t)result >> 32);
+
+	if (rd != 0) {
+		x[rd] = high_bits;
+	}
 }
 
 void mulhu()
@@ -981,6 +989,14 @@ void unimplemented()
 	}
 
 	print_regs();
+
+	if(bss_begin == 0x60000000 && bss_end > 0x60000040)  {
+		printf("test count: %d\n", ((uint8_t *)mem[BSS])[64]);
+		for (uint8_t i = 0; i < 64; i++) {
+			printf("test %d: %d\n", i + 1, ((uint8_t *)mem[BSS])[i]);
+		}
+	}
+
 	exit(-1);
 	// fence
 	// fencei
@@ -1093,6 +1109,7 @@ void exec_instr()
 
 	if ((instr & 0x3) != 0x3) {
 		printf("Error: bits 1-0 not valid.\n");
+		print_regs();
 		exit(-1);
 	}
 

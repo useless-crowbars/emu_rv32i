@@ -250,7 +250,7 @@ void load_elf(const char* elf_file) {
 
 	mem[CRITICAL] = calloc(0x800, 1);
 	mem[GPU] = malloc(0x8001);
-	mem[STACK] = malloc(0x1000);
+	mem[STACK] = malloc(0x10000);
 	mem[REG] = malloc(1);
 
 	mem[DATA] = malloc(data_end - data_begin);
