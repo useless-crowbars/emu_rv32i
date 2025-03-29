@@ -22,7 +22,7 @@ uint32_t sext(uint32_t val, uint32_t bits)
 	return val;
 }
 
-void lui()
+void lui(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	uint32_t imm = instr >> 12;
@@ -35,7 +35,7 @@ void lui()
 	x[rd] = imm << 12;
 }
 
-void auipc()
+void auipc(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	uint32_t imm = instr >> 12;
@@ -48,7 +48,7 @@ void auipc()
 	x[rd] = pc - 4 + (imm << 12);
 }
 
-void addi()
+void addi(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -75,7 +75,7 @@ void addi()
 	x[rd] = x[rs1] + imm;
 }
 
-void slti()
+void slti(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -89,7 +89,7 @@ void slti()
 	x[rd] = (int32_t)x[rs1] < (int32_t)imm;
 }
 
-void sltiu()
+void sltiu(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -103,7 +103,7 @@ void sltiu()
 	x[rd] = x[rs1] < imm;
 }
 
-void xori()
+void xori(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -117,7 +117,7 @@ void xori()
 	x[rd] = x[rs1] ^ imm;
 }
 
-void ori()
+void ori(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -131,7 +131,7 @@ void ori()
 	x[rd] = x[rs1] | imm;
 }
 
-void andi()
+void andi(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -145,7 +145,7 @@ void andi()
 	x[rd] = x[rs1] & imm;
 }
 
-void slli()
+void slli(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -158,7 +158,7 @@ void slli()
 	x[rd] = x[rs1] << shamt;
 }
 
-void srli()
+void srli(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -171,7 +171,7 @@ void srli()
 	x[rd] = x[rs1] >> shamt;
 }
 
-void srai()
+void srai(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -184,7 +184,7 @@ void srai()
 	x[rd] = (uint32_t)((int32_t)x[rs1] >> shamt);
 }
 
-void add()
+void add(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -197,7 +197,7 @@ void add()
 	x[rd] = x[rs1] + x[rs2];
 }
 
-void sub()
+void sub(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -210,7 +210,7 @@ void sub()
 	x[rd] = x[rs1] - x[rs2];
 }
 
-void sll()
+void sll(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -223,7 +223,7 @@ void sll()
 	x[rd] = x[rs1] << (x[rs2] & 0x1f);
 }
 
-void slt()
+void slt(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -236,7 +236,7 @@ void slt()
 	x[rd] = (int32_t)x[rs1] < (int32_t)x[rs2];
 }
 
-void sltu()
+void sltu(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -249,8 +249,8 @@ void sltu()
 	x[rd] = x[rs1] < x[rs2];
 }
 
-void xor
-() {
+void xor(void)
+{
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
 	size_t rs2 = (instr >> 20) & 0x1f;
@@ -262,7 +262,7 @@ void xor
 	x[rd] = x[rs1] ^ x[rs2];
 }
 
-void srl()
+void srl(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -275,7 +275,7 @@ void srl()
 	x[rd] = x[rs1] >> (x[rs2] & 0x1f);
 }
 
-void sra()
+void sra(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -288,7 +288,7 @@ void sra()
 	x[rd] = (uint32_t)((int32_t)x[rs1] >> (x[rs2] & 0x1f));
 }
 
-void or ()
+void or(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -301,7 +301,7 @@ void or ()
 	x[rd] = x[rs1] | x[rs2];
 }
 
-void and ()
+void and(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -314,97 +314,97 @@ void and ()
 	x[rd] = x[rs1] & x[rs2];
 }
 
-void fence()
+void fence(void)
 {
 	printf("fence: unimplemented\n");
 	exit(-1);
 }
 
-void fencei()
+void fencei(void)
 {
 	printf("fencei: unimplemented\n");
 	exit(-1);
 }
 
-void csrrw()
+void csrrw(void)
 {
 	printf("csrrw: unimplemented\n");
 	exit(-1);
 }
 
-void csrrs()
+void csrrs(void)
 {
 	printf("csrrs: unimplemented\n");
 	exit(-1);
 }
 
-void csrrc()
+void csrrc(void)
 {
 	printf("csrrc: unimplemented\n");
 	exit(-1);
 }
 
-void csrrwi()
+void csrrwi(void)
 {
 	printf("csrrwi: unimplemented\n");
 	exit(-1);
 }
 
-void csrrsi()
+void csrrsi(void)
 {
 	printf("csrrsi: unimplemented\n");
 	exit(-1);
 }
 
-void csrrci()
+void csrrci(void)
 {
 	printf("csrrci: unimplemented\n");
 	exit(-1);
 }
 
-void ecall()
+void ecall(void)
 {
 	printf("ecall: unimplemented\n");
 	exit(-1);
 }
 
-void ebreak()
+void ebreak(void)
 {
 	printf("ebreak: unimplemented\n");
 	exit(-1);
 }
 
-void uret()
+void uret(void)
 {
 	printf("uret: unimplemented\n");
 	exit(-1);
 }
 
-void sret()
+void sret(void)
 {
 	printf("sret: unimplemented\n");
 	exit(-1);
 }
 
-void mret()
+void mret(void)
 {
 	printf("mret: unimplemented\n");
 	exit(-1);
 }
 
-void wfi()
+void wfi(void)
 {
 	printf("wfi: unimplemented\n");
 	exit(-1);
 }
 
-void sfencevma()
+void sfencevma(void)
 {
 	printf("sfencevma: unimplemented\n");
 	exit(-1);
 }
 
-void lb()
+void lb(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -418,7 +418,7 @@ void lb()
 	x[rd] = sext(get_b(x[rs1] + off), 8);
 }
 
-void lh()
+void lh(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -432,7 +432,7 @@ void lh()
 	x[rd] = sext(get_hw(x[rs1] + off), 16);
 }
 
-void lw()
+void lw(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -446,7 +446,7 @@ void lw()
 	x[rd] = get_w(x[rs1] + off);
 }
 
-void lbu()
+void lbu(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -460,7 +460,7 @@ void lbu()
 	x[rd] = (uint32_t)get_b(x[rs1] + off);
 }
 
-void lhu()
+void lhu(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -474,7 +474,7 @@ void lhu()
 	x[rd] = (uint32_t)get_hw(x[rs1] + off);
 }
 
-void sb()
+void sb(void)
 {
 	size_t rs1 = (instr >> 15) & 0x1f;
 	size_t rs2 = (instr >> 20) & 0x1f;
@@ -488,7 +488,7 @@ void sb()
 	set_b(x[rs1] + off, (uint8_t)(x[rs2] & 0xff));
 }
 
-void sh()
+void sh(void)
 {
 	size_t rs1 = (instr >> 15) & 0x1f;
 	size_t rs2 = (instr >> 20) & 0x1f;
@@ -502,7 +502,7 @@ void sh()
 	set_hw(x[rs1] + off, (uint16_t)(x[rs2] & 0xffff));
 }
 
-void sw()
+void sw(void)
 {
 	size_t rs1 = (instr >> 15) & 0x1f;
 	size_t rs2 = (instr >> 20) & 0x1f;
@@ -516,7 +516,7 @@ void sw()
 	set_w(x[rs1] + off, (uint32_t)x[rs2]);
 }
 
-void jal()
+void jal(void)
 {
 	uint32_t off1 = (instr >> 31) << 20; // 20
 	uint32_t off2 = instr & 0xff000; // 19:12
@@ -535,7 +535,7 @@ void jal()
 	pc += off - 4;
 }
 
-void jalr()
+void jalr(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -558,7 +558,7 @@ void jalr()
 	x[rd] = t;
 }
 
-void beq()
+void beq(void)
 {
 	uint32_t off1 = (instr >> 31) << 12; // 12
 	uint32_t off2 = ((instr >> 25) & 0x3f) << 5; // 10:5
@@ -579,7 +579,7 @@ void beq()
 	}
 }
 
-void bne()
+void bne(void)
 {
 	uint32_t off1 = (instr >> 31) << 12; // 12
 	uint32_t off2 = ((instr >> 25) & 0x3f) << 5; // 10:5
@@ -600,7 +600,7 @@ void bne()
 	}
 }
 
-void blt()
+void blt(void)
 {
 	uint32_t off1 = (instr >> 31) << 12; // 12
 	uint32_t off2 = ((instr >> 25) & 0x3f) << 5; // 10:5
@@ -621,7 +621,7 @@ void blt()
 	}
 }
 
-void bge()
+void bge(void)
 {
 	uint32_t off1 = (instr >> 31) << 12; // 12
 	uint32_t off2 = ((instr >> 25) & 0x3f) << 5; // 10:5
@@ -642,7 +642,7 @@ void bge()
 	}
 }
 
-void bltu()
+void bltu(void)
 {
 	uint32_t off1 = (instr >> 31) << 12; // 12
 	uint32_t off2 = ((instr >> 25) & 0x3f) << 5; // 10:5
@@ -663,7 +663,7 @@ void bltu()
 	}
 }
 
-void bgeu()
+void bgeu(void)
 {
 	uint32_t off1 = (instr >> 31) << 12; // 12
 	uint32_t off2 = ((instr >> 25) & 0x3f) << 5; // 10:5
@@ -684,7 +684,7 @@ void bgeu()
 	}
 }
 
-void imm_arith_instr()
+void imm_arith_instr(void)
 {
 	uint32_t op2 = (instr >> 12) & 0x7;
 	uint32_t op3 = (instr >> 27);
@@ -731,7 +731,7 @@ void imm_arith_instr()
 	}
 }
 
-void mul()
+void mul(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -744,7 +744,7 @@ void mul()
 	x[rd] = (uint32_t)((int64_t)(int32_t)x[rs1] * (int64_t)(int32_t)x[rs2]);
 }
 
-void mulh()
+void mulh(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -757,7 +757,7 @@ void mulh()
 	x[rd] = (uint32_t)((uint64_t)((int64_t)(int32_t)x[rs1] * (int64_t)(int32_t)x[rs2]) >> 32);
 }
 
-void mulhsu()
+void mulhsu(void)
 {
 	size_t rd = (instr >> 7) & 0x1F;
 	size_t rs1 = (instr >> 15) & 0x1F;
@@ -778,7 +778,7 @@ void mulhsu()
 	}
 }
 
-void mulhu()
+void mulhu(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -791,7 +791,7 @@ void mulhu()
 	x[rd] = (uint32_t)((uint64_t)((uint64_t)x[rs1] * (uint64_t)x[rs2]) >> 32);
 }
 
-void _div()
+void _div(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -815,7 +815,7 @@ void _div()
 	x[rd] = (uint32_t)((int32_t)x[rs1] / (int32_t)x[rs2]);
 }
 
-void divu()
+void divu(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -834,7 +834,7 @@ void divu()
 	x[rd] = x[rs1] / x[rs2];
 }
 
-void rem()
+void rem(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -857,7 +857,7 @@ void rem()
 	x[rd] = (uint32_t)((int32_t)x[rs1] % (int32_t)x[rs2]);
 }
 
-void remu()
+void remu(void)
 {
 	size_t rd = (instr >> 7) & 0x1f;
 	size_t rs1 = (instr >> 15) & 0x1f;
@@ -875,7 +875,7 @@ void remu()
 	x[rd] = x[rs1] % x[rs2];
 }
 
-void arith_instr()
+void arith_instr(void)
 {
 	uint32_t op2 = (instr >> 12) & 0x7;
 	uint32_t op3 = (instr >> 27);
@@ -979,7 +979,7 @@ void arith_instr()
 	}
 }
 
-void unimplemented()
+void unimplemented(void)
 {
 	printf("unimplemented(): unimplemented instr\n");
 	for (int i = 10; i < 15; i++) {
@@ -1015,7 +1015,7 @@ void unimplemented()
 	// sfencevma
 }
 
-void load()
+void load(void)
 {
 	uint32_t op2 = (instr >> 12) & 0x7;
 
@@ -1041,7 +1041,7 @@ void load()
 	}
 }
 
-void store()
+void store(void)
 {
 	uint32_t op2 = (instr >> 12) & 0x7;
 
@@ -1061,7 +1061,7 @@ void store()
 	}
 }
 
-void jump()
+void jump(void)
 {
 	uint32_t op2 = (instr >> 12) & 0x7;
 
@@ -1090,7 +1090,7 @@ void jump()
 	}
 }
 
-void exec_instr()
+void exec_instr(void)
 {
 	x[0] = 0;
 	if (get_mem_seg(pc) != TEXT) {
